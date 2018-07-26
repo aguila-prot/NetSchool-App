@@ -41,21 +41,11 @@
 		ED30F3122107923D0065BBC8 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED30F30F2107923D0065BBC8 /* JSONParser.swift */; };
 		ED6E575720F0CB7D0002C7BD /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6E575620F0CB7D0002C7BD /* WebView.swift */; };
 		ED6E575920F0CC2C0002C7BD /* Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6E575820F0CC2C0002C7BD /* Details.swift */; };
-		EDC5101D2109E65C00270BCA /* CustomCollectionViewLayoutFinalMarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC510092109E65C00270BCA /* CustomCollectionViewLayoutFinalMarks.swift */; };
-		EDC5101E2109E65C00270BCA /* CollectionViewControllerFinalMarks.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC5100A2109E65C00270BCA /* CollectionViewControllerFinalMarks.xib */; };
-		EDC5101F2109E65C00270BCA /* CollectionViewLayoutBigJournal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC5100C2109E65C00270BCA /* CollectionViewLayoutBigJournal.swift */; };
-		EDC510202109E65C00270BCA /* CollectionViewControllerBigJournal.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC5100D2109E65C00270BCA /* CollectionViewControllerBigJournal.xib */; };
-		EDC510212109E65C00270BCA /* CollectionViewLayoutProgressWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC5100F2109E65C00270BCA /* CollectionViewLayoutProgressWork.swift */; };
-		EDC510222109E65C00270BCA /* CollectionViewControllerProgressWork.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC510102109E65C00270BCA /* CollectionViewControllerProgressWork.xib */; };
-		EDC510232109E65C00270BCA /* CollectionViewLayoutMiddleMarks.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC510122109E65C00270BCA /* CollectionViewLayoutMiddleMarks.swift */; };
-		EDC510242109E65C00270BCA /* CollectionViewControllerMiddleMarks.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC510132109E65C00270BCA /* CollectionViewControllerMiddleMarks.xib */; };
 		EDC510252109E65C00270BCA /* ContentCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC510142109E65C00270BCA /* ContentCollectionViewCell.xib */; };
-		EDC510262109E65C00270BCA /* CustomCollectionViewLayoutInfoForParents.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC510162109E65C00270BCA /* CustomCollectionViewLayoutInfoForParents.swift */; };
-		EDC510272109E65C00270BCA /* CollectionViewControllerInfoForParents.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC510172109E65C00270BCA /* CollectionViewControllerInfoForParents.xib */; };
-		EDC510282109E65C00270BCA /* CollectionViewLayoutPermissionToJournal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC510192109E65C00270BCA /* CollectionViewLayoutPermissionToJournal.swift */; };
-		EDC510292109E65C00270BCA /* CollectionViewControllerPermissionToJournal.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC5101A2109E65C00270BCA /* CollectionViewControllerPermissionToJournal.xib */; };
-		EDC5102A2109E65C00270BCA /* ContentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC5101B2109E65C00270BCA /* ContentCollectionViewCell.swift */; };
+		EDC510292109E65C00270BCA /* CollectionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC5101A2109E65C00270BCA /* CollectionViewController.xib */; };
 		EDC5102B2109E65C00270BCA /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC5101C2109E65C00270BCA /* CollectionViewController.swift */; };
+		EDC51031210A55BA00270BCA /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC51030210A55BA00270BCA /* Layout.swift */; };
+		EDC51033210A5E2A00270BCA /* ContentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC51032210A5E2900270BCA /* ContentCollectionViewCell.swift */; };
 		EDDBF98220EFA8F4005CDAA6 /* NewLetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDBF98120EFA8F4005CDAA6 /* NewLetter.swift */; };
 		EDDBF98420EFAE06005CDAA6 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDBF98320EFAE06005CDAA6 /* Network.swift */; };
 		EDDBF98720EFCAF2005CDAA6 /* Forum.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDBF98620EFCAF2005CDAA6 /* Forum.swift */; };
@@ -105,21 +95,11 @@
 		ED30F30F2107923D0065BBC8 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		ED6E575620F0CB7D0002C7BD /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		ED6E575820F0CC2C0002C7BD /* Details.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Details.swift; sourceTree = "<group>"; };
-		EDC510092109E65C00270BCA /* CustomCollectionViewLayoutFinalMarks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewLayoutFinalMarks.swift; sourceTree = "<group>"; };
-		EDC5100A2109E65C00270BCA /* CollectionViewControllerFinalMarks.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewControllerFinalMarks.xib; sourceTree = "<group>"; };
-		EDC5100C2109E65C00270BCA /* CollectionViewLayoutBigJournal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewLayoutBigJournal.swift; sourceTree = "<group>"; };
-		EDC5100D2109E65C00270BCA /* CollectionViewControllerBigJournal.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewControllerBigJournal.xib; sourceTree = "<group>"; };
-		EDC5100F2109E65C00270BCA /* CollectionViewLayoutProgressWork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewLayoutProgressWork.swift; sourceTree = "<group>"; };
-		EDC510102109E65C00270BCA /* CollectionViewControllerProgressWork.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewControllerProgressWork.xib; sourceTree = "<group>"; };
-		EDC510122109E65C00270BCA /* CollectionViewLayoutMiddleMarks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewLayoutMiddleMarks.swift; sourceTree = "<group>"; };
-		EDC510132109E65C00270BCA /* CollectionViewControllerMiddleMarks.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewControllerMiddleMarks.xib; sourceTree = "<group>"; };
 		EDC510142109E65C00270BCA /* ContentCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContentCollectionViewCell.xib; sourceTree = "<group>"; };
-		EDC510162109E65C00270BCA /* CustomCollectionViewLayoutInfoForParents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCollectionViewLayoutInfoForParents.swift; sourceTree = "<group>"; };
-		EDC510172109E65C00270BCA /* CollectionViewControllerInfoForParents.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewControllerInfoForParents.xib; sourceTree = "<group>"; };
-		EDC510192109E65C00270BCA /* CollectionViewLayoutPermissionToJournal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewLayoutPermissionToJournal.swift; sourceTree = "<group>"; };
-		EDC5101A2109E65C00270BCA /* CollectionViewControllerPermissionToJournal.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewControllerPermissionToJournal.xib; sourceTree = "<group>"; };
-		EDC5101B2109E65C00270BCA /* ContentCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentCollectionViewCell.swift; sourceTree = "<group>"; };
+		EDC5101A2109E65C00270BCA /* CollectionViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CollectionViewController.xib; sourceTree = "<group>"; };
 		EDC5101C2109E65C00270BCA /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		EDC51030210A55BA00270BCA /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		EDC51032210A5E2900270BCA /* ContentCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentCollectionViewCell.swift; sourceTree = "<group>"; };
 		EDDBF98120EFA8F4005CDAA6 /* NewLetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewLetter.swift; sourceTree = "<group>"; };
 		EDDBF98320EFAE06005CDAA6 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		EDDBF98620EFCAF2005CDAA6 /* Forum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forum.swift; sourceTree = "<group>"; };
@@ -347,71 +327,13 @@
 		EDC510072109E65C00270BCA /* Collection View */ = {
 			isa = PBXGroup;
 			children = (
-				EDC510082109E65C00270BCA /* Final Marks */,
-				EDC5100B2109E65C00270BCA /* Big Journal */,
-				EDC5100E2109E65C00270BCA /* Progress Work */,
-				EDC510112109E65C00270BCA /* Middle Marks */,
-				EDC510142109E65C00270BCA /* ContentCollectionViewCell.xib */,
-				EDC510152109E65C00270BCA /* Information For Parents */,
-				EDC510182109E65C00270BCA /* Permission To Journal */,
-				EDC5101B2109E65C00270BCA /* ContentCollectionViewCell.swift */,
+				EDC51030210A55BA00270BCA /* Layout.swift */,
 				EDC5101C2109E65C00270BCA /* CollectionViewController.swift */,
+				EDC5101A2109E65C00270BCA /* CollectionViewController.xib */,
+				EDC510142109E65C00270BCA /* ContentCollectionViewCell.xib */,
+				EDC51032210A5E2900270BCA /* ContentCollectionViewCell.swift */,
 			);
 			path = "Collection View";
-			sourceTree = "<group>";
-		};
-		EDC510082109E65C00270BCA /* Final Marks */ = {
-			isa = PBXGroup;
-			children = (
-				EDC510092109E65C00270BCA /* CustomCollectionViewLayoutFinalMarks.swift */,
-				EDC5100A2109E65C00270BCA /* CollectionViewControllerFinalMarks.xib */,
-			);
-			path = "Final Marks";
-			sourceTree = "<group>";
-		};
-		EDC5100B2109E65C00270BCA /* Big Journal */ = {
-			isa = PBXGroup;
-			children = (
-				EDC5100C2109E65C00270BCA /* CollectionViewLayoutBigJournal.swift */,
-				EDC5100D2109E65C00270BCA /* CollectionViewControllerBigJournal.xib */,
-			);
-			path = "Big Journal";
-			sourceTree = "<group>";
-		};
-		EDC5100E2109E65C00270BCA /* Progress Work */ = {
-			isa = PBXGroup;
-			children = (
-				EDC5100F2109E65C00270BCA /* CollectionViewLayoutProgressWork.swift */,
-				EDC510102109E65C00270BCA /* CollectionViewControllerProgressWork.xib */,
-			);
-			path = "Progress Work";
-			sourceTree = "<group>";
-		};
-		EDC510112109E65C00270BCA /* Middle Marks */ = {
-			isa = PBXGroup;
-			children = (
-				EDC510122109E65C00270BCA /* CollectionViewLayoutMiddleMarks.swift */,
-				EDC510132109E65C00270BCA /* CollectionViewControllerMiddleMarks.xib */,
-			);
-			path = "Middle Marks";
-			sourceTree = "<group>";
-		};
-		EDC510152109E65C00270BCA /* Information For Parents */ = {
-			isa = PBXGroup;
-			children = (
-				EDC510162109E65C00270BCA /* CustomCollectionViewLayoutInfoForParents.swift */,
-				EDC510172109E65C00270BCA /* CollectionViewControllerInfoForParents.xib */,
-			);
-			path = "Information For Parents";
-			sourceTree = "<group>";
-		};
-		EDC510182109E65C00270BCA /* Permission To Journal */ = {
-			isa = PBXGroup;
-			children = (
-				EDC510192109E65C00270BCA /* CollectionViewLayoutPermissionToJournal.swift */,
-				EDC5101A2109E65C00270BCA /* CollectionViewControllerPermissionToJournal.xib */,
-			);
-			path = "Permission To Journal";
 			sourceTree = "<group>";
 		};
 		EDDBF98520EFCAE2005CDAA6 /* Forum */ = {
@@ -493,18 +415,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EDC510292109E65C00270BCA /* CollectionViewControllerPermissionToJournal.xib in Resources */,
-				EDC510222109E65C00270BCA /* CollectionViewControllerProgressWork.xib in Resources */,
-				EDC510272109E65C00270BCA /* CollectionViewControllerInfoForParents.xib in Resources */,
+				EDC510292109E65C00270BCA /* CollectionViewController.xib in Resources */,
 				ED05E14420ED5DC900A632ED /* Blogger_Sans.ttf in Resources */,
-				EDC510242109E65C00270BCA /* CollectionViewControllerMiddleMarks.xib in Resources */,
 				ED30F2E52107899E0065BBC8 /* LaunchScreeniPad.storyboard in Resources */,
 				EDC510252109E65C00270BCA /* ContentCollectionViewCell.xib in Resources */,
-				EDC5101E2109E65C00270BCA /* CollectionViewControllerFinalMarks.xib in Resources */,
 				ED05E0FA20E69F6B00A632ED /* LaunchScreen.storyboard in Resources */,
 				ED05E14220ED5DC300A632ED /* Blogger_Sans-Light.ttf in Resources */,
 				ED05E0F720E69F6B00A632ED /* Assets.xcassets in Resources */,
-				EDC510202109E65C00270BCA /* CollectionViewControllerBigJournal.xib in Resources */,
 				ED05E14320ED5DC600A632ED /* Blogger_Sans-Bold.ttf in Resources */,
 				ED05E0F220E69F6800A632ED /* Main.storyboard in Resources */,
 			);
@@ -564,7 +481,6 @@
 			files = (
 				ED05766520F8E7690069B379 /* SettingsDetail.swift in Sources */,
 				EDDBF98920EFCFB0005CDAA6 /* ForumDetail.swift in Sources */,
-				EDC510282109E65C00270BCA /* CollectionViewLayoutPermissionToJournal.swift in Sources */,
 				ED05E13320ED38D500A632ED /* GlobalFunctions.swift in Sources */,
 				EDC5102B2109E65C00270BCA /* CollectionViewController.swift in Sources */,
 				ED05766120F796CB0069B379 /* Login.swift in Sources */,
@@ -572,29 +488,25 @@
 				ED05764720F4E05E0069B379 /* Profile.swift in Sources */,
 				EDDBF98E20F0C669005CDAA6 /* Resorces.swift in Sources */,
 				EDDBF98420EFAE06005CDAA6 /* Network.swift in Sources */,
+				EDC51033210A5E2A00270BCA /* ContentCollectionViewCell.swift in Sources */,
 				EDDBF98720EFCAF2005CDAA6 /* Forum.swift in Sources */,
 				ED30F2E721078A050065BBC8 /* ColorPickerInformatio.swift in Sources */,
 				ED6E575920F0CC2C0002C7BD /* Details.swift in Sources */,
 				ED6E575720F0CB7D0002C7BD /* WebView.swift in Sources */,
 				ED05764F20F5560C0069B379 /* Settings.swift in Sources */,
-				EDC510212109E65C00270BCA /* CollectionViewLayoutProgressWork.swift in Sources */,
 				ED30F3112107923D0065BBC8 /* Structs.swift in Sources */,
 				ED05764C20F4EA880069B379 /* Info.swift in Sources */,
-				EDC5102A2109E65C00270BCA /* ContentCollectionViewCell.swift in Sources */,
 				ED05E13720ED3BAD00A632ED /* ACTabScrollView.swift in Sources */,
 				ED05E10620E6B7EA00A632ED /* Posts.swift in Sources */,
 				ED05E14820EECF0100A632ED /* Mail.swift in Sources */,
 				ED05E11B20E913AB00A632ED /* DatePicker.m in Sources */,
-				EDC5101F2109E65C00270BCA /* CollectionViewLayoutBigJournal.swift in Sources */,
 				ED05E0ED20E69F6800A632ED /* AppDelegate.swift in Sources */,
 				ED30F2E32102393B0065BBC8 /* ReportDetail.swift in Sources */,
 				ED05E12D20ED331A00A632ED /* Extensions.swift in Sources */,
 				ED30F3122107923D0065BBC8 /* JSONParser.swift in Sources */,
-				EDC5101D2109E65C00270BCA /* CustomCollectionViewLayoutFinalMarks.swift in Sources */,
-				EDC510232109E65C00270BCA /* CollectionViewLayoutMiddleMarks.swift in Sources */,
 				ED05E10820E6B84200A632ED /* More.swift in Sources */,
 				ED05E13120ED380100A632ED /* DiaryScrolView.swift in Sources */,
-				EDC510262109E65C00270BCA /* CustomCollectionViewLayoutInfoForParents.swift in Sources */,
+				EDC51031210A55BA00270BCA /* Layout.swift in Sources */,
 				ED05E10420E6B7C100A632ED /* Schedule.swift in Sources */,
 				EDDBF98220EFA8F4005CDAA6 /* NewLetter.swift in Sources */,
 				ED05E10220E6B6E500A632ED /* Diary.swift in Sources */,

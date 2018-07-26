@@ -13,27 +13,70 @@ class JSONParser{
     var result = [[String]]()
     var countOfSections: Int?
     var countOfRows: Int?
-    var maxLength = 0
+    var rowHeights: [CGFloat] = []
+    var maxWidth:CGFloat = 0
+    
+    init(data: String, type:Int){
+        self.data = data
+        self.inputData = data.data(using: .utf8)!
+        switch type {
+        case 0: marks()
+        case 1: middle_marks()
+        case 2: dynamic_middle_marks_t()
+        case 3: dynamic_middle_marks_sb()
+        case 4: progress_work()
+        case 5: permission_to_journal()
+        case 6: info_for_parents()
+        case 7: big_journal()
+        default: ()
+        }
+        countOfRows = result[0].count
+        countOfSections = result.count
+    }
+    
+    private func updateMaxWidth(topic: String) {
+        let components = topic.components(separatedBy: " ")
+        for component in components {
+            let length = component.size(withAttributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14.0)]).width
+            maxWidth = max(maxWidth, length)
+        }
+    }
+    
+    private func updateRowHeights(index: Int = 0, width: CGFloat) {
+        rowHeights.removeAll()
+        for row in result {
+            let label =  UILabel(frame: CGRect(x: 0, y: 0, width: width, height: 45))
+            label.numberOfLines = 0
+            let attributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]
+            label.attributedText = NSMutableAttributedString(string: row[index], attributes: attributes)
+            label.sizeToFit()
+            rowHeights.append(max(label.frame.height, 45))
+        }
+    }
+    
     func marks(){
         let json = try! decoder.decode(Marks.self, from: inputData)
-        result.append(["Предмет", "Четверть 1", "Четверть 2", "Четверть 3", "Четверть 4", "Годовая", "Экзамен","Итоговая"])
-        for i in json.table{
-            result.append([i.subject, i.period1, i.period2, i.period3, i.period4, i.year, i.exam, i.final])
-            let components = i.subject.components(separatedBy: " ")
-            for component in components {
-                let length = component.size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width
-                maxLength = max(maxLength, Int(length))
-            }
+        result.append(["Предмет", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Годовая", "Экзамен","Итоговая"])
+        updateMaxWidth(topic: "Предмет")
+        for row in json.table {
+            result.append([row.subject, row.period1, row.period2, row.period3, row.period4, row.year, row.exam, row.final])
+            updateMaxWidth(topic: row.subject)
         }
+        updateRowHeights(width: maxWidth)
     }
+    
     func middle_marks(){
         let json = try! decoder.decode(MiddleMarks.self, from: inputData)
-        result.append(["Предмет", "Балл ученика", "Балл класса"])
-        for i in json.data{
-            result.append([i.subject, i.mark_of_student, i.mark_of_class])
+        result.append(["Предмет", "Ср. балл ученика", "Ср. балл класса"])
+        updateMaxWidth(topic: "Предмет")
+        for row in json.data {
+            result.append([row.subject, row.mark_of_student, row.mark_of_class])
+            updateMaxWidth(topic: row.subject)
         }
+        updateRowHeights(width: maxWidth)
     }
-    func dynamic_middle_marks_t(){
+    
+    func dynamic_middle_marks_t() {
         let json = try! decoder.decode(DynamicMiddleMarksT.self, from: inputData)
         result.append(["Период", "Балл ученика", "Балл класса"])
         for i in json.data{
@@ -43,17 +86,22 @@ class JSONParser{
     func dynamic_middle_marks_sb(){
         let json = try! decoder.decode(DynamicMiddleMarksSB.self, from: inputData)
         result.append(["Дата", "Кол-во срезовых работ ученика", "Балл ученика", "Кол-во срезовых работ класса", "Балл класса"])
-        for i in json.data{
+        for i in json.data {
             result.append([i.date, i.amount_of_student, i.mark_of_student, i.amount_of_class, i.mark_of_class])
         }
     }
+    
     func progress_work(){
         let json = try! decoder.decode(Work.self, from: inputData)
-        result.append(["Тип задания", "Тема задания", "Дата выполнения", "Балл"])
-        for i in json.work{
-            result.append([i.type, i.theme, i.date, i.mark])
+        result.append(["Тип задания", "Тема задания", "Дата", "Балл"])
+        updateMaxWidth(topic: "Тип задания")
+        for row in json.work{
+            result.append([row.type, row.theme, row.date, row.mark])
+            updateMaxWidth(topic: row.type)
         }
+        updateRowHeights(index: 1, width: 200)
     }
+    
     func permission_to_journal(){
         let json = try! decoder.decode(JournalTable.self, from: inputData)
         result.append(["Класс", "Предмет", "Дата", "Пользователь", "Занятие в расписании", "Период", "Действие"])
@@ -61,6 +109,7 @@ class JSONParser{
             result.append([i.class_number, i.lesson, i.date_time, i.user, i.info, i.period, i.type])
         }
     }
+    
     func info_for_parents(){
         let json = try! decoder.decode(InfoForParents.self, from: inputData)
         result.append(["Предмет"])
@@ -78,6 +127,7 @@ class JSONParser{
             result[result.count-1].append(i.final)
         }
     }
+    
     func month_to_number(data : String) -> String{
         switch data{
         case "January", "Январь", "01", "1":
@@ -108,6 +158,7 @@ class JSONParser{
             return "Error"
         }
     }
+    
     func big_journal(){
         let json = try! decoder.decode(BigJournal.self, from: inputData)
         var dates: [String] = []
@@ -132,7 +183,7 @@ class JSONParser{
                 }
             }
         }
-        for s in set_sub{
+        for s in set_sub {
             result.append([s])
             for d in dates {
                 result[i].append(subject[s]![d] == nil ? "" : subject[s]![d]!)
@@ -140,30 +191,8 @@ class JSONParser{
             i+=1
         }
     }
-    func load_data() -> (data:[[String]], countOfSections:Int?, countOfRows:Int?, maxLength:Int){
-        return (result, countOfSections, countOfRows, maxLength)
-    }
-    init(data: String, type:Int){
-        self.data = data
-        self.inputData = data.data(using: .utf8)!
-        if type == 0{
-            marks()
-        }else if type == 1{
-            middle_marks()
-        }else if type == 2{
-            dynamic_middle_marks_t()
-        }else if type == 3{
-            dynamic_middle_marks_sb()
-        }else if type == 4{
-            progress_work()
-        }else if type == 5{
-            permission_to_journal()
-        }else if type == 6{
-            info_for_parents()
-        }else if type == 7{
-            big_journal()
-        }
-        countOfRows = result[0].count
-        countOfSections = result.count
+    
+    func parsedData() -> (data:[[String]], countOfSections:Int?, countOfRows:Int?, rowHeights: [CGFloat], maxWidth: CGFloat){
+        return (result, countOfSections, countOfRows, rowHeights, maxWidth)
     }
 }

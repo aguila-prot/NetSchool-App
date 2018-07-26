@@ -102,25 +102,6 @@ extension Settings: UITableViewDataSource, UITableViewDelegate {
                 detailVC.settingsDetailType = .schedule
                 show(detailVC)
             } else {
-//                func getValues() -> (title: String, frame: CGRect) {
-//                    let title = "\n\n\n\n\n\n\n\n"
-//                    let f = view.frame.width - 20 - 50*6
-//                    let g:CGFloat =  5*8 + 34
-//                    let x = (f-g) / 2
-//                    return (title: title, frame: CGRect(x: x, y: -10, width: 50*6 + 5*8 + 30, height: 3*50 + 2*16 + 16))
-//                }
-//                let (title, frame) = getValues()
-//                colorPaletteAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
-//                colorPickerView = ColorPickerView(frame: frame)
-//                colorPaletteAlert.addCancelAction
-//                colorPickerView.delegate = self
-//                colorPickerView.layoutDelegate = self
-//                colorPickerView.colors = Settings.colorsHEXs.map{UIColor(hex: $0).withAlphaComponent(0.86)}
-//                colorPaletteAlert.view.addSubview(colorPickerView)
-//                colorPaletteAlert.popoverPresentationController?.sourceView = tableView
-//                colorPaletteAlert.popoverPresentationController?.sourceRect = tableView.cellForRow(at: indexPath)!.frame
-//                self.present(colorPaletteAlert)
-//                tableView.deselectSelectedRow
                 let w = view.frame.width / colInfo.k
                 print(UIDevice.current.modelName)
                 func getValues() -> (title: String, frame: CGRect) {

@@ -1,2 +1,0 @@
-# NetSchool-App
-iOS App

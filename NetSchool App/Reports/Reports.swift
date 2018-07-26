@@ -269,7 +269,7 @@ extension Reports: UITableViewDataSource, UITableViewDelegate {
                 }
                 ]}
                 """
-                openTableFromJSON(data, name: "CollectionViewControllerFinalMarks", type: 0)
+                openTableFromJSON(data, type: 0)
             case 1:
                 let detailVC = ReportDetails()
                 detailVC.reportVC = self
@@ -412,7 +412,7 @@ extension Reports: UITableViewDataSource, UITableViewDelegate {
                 }
                 }
                 """
-                openTableFromJSON(data, name: "CollectionViewControllerBigJournal", type: 7)
+                openTableFromJSON(data, type: 7)
             case 5:
                 let data = """
                 {
@@ -438,7 +438,7 @@ extension Reports: UITableViewDataSource, UITableViewDelegate {
                 ]
                 }
                 """
-                openTableFromJSON(data, name: "CollectionViewControllerPermissionToJournal", type: 5)
+                openTableFromJSON(data, type: 5)
             case 6:
                 let detailVC = ReportDetails()
                 detailVC.reportVC = self

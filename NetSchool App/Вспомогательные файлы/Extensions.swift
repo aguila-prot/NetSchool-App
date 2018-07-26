@@ -145,13 +145,15 @@ extension UIViewController {
     func show(_ VCToShow: UIViewController) {
         self.show(VCToShow, sender: nil)
     }
-    func openTableFromJSON(_ data: String, name: String, type: Int) {
-        let mainController = CollectionViewController(nibName: name, bundle: nil)
+    func openTableFromJSON(_ data: String, type: Int) {
+        let mainController = CollectionViewController(nibName: "CollectionViewController", bundle: nil)
+        mainController.type = type
         let json = JSONParser(data:data, type: type)
-        let full_data = json.load_data()
-        setInt(forKey: "sectionLength", val: full_data.maxLength)
-        let temp:TableData = TableData(countOfSections: full_data.countOfSections ?? 0, countOfRows:full_data.countOfRows ?? 0, data: full_data.data)
-        mainController.load_data(data:temp)
+        let parsedData = json.parsedData()
+        let table:TableData = TableData(countOfSections: parsedData.countOfSections ?? 0, countOfRows: parsedData.countOfRows ?? 0, data: parsedData.data)
+        mainController.data = table
+        mainController.rowHeights = parsedData.rowHeights
+        mainController.maxWidth = parsedData.maxWidth
         show(mainController)
     }
 }
@@ -163,6 +165,21 @@ extension UIColor {
     
     static var schemeTintColor: UIColor {
         return isSchemeLight() ? darkSchemeColor().withAlphaComponent(0.8) : UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1)
+    }
+    
+    func lighter(by percentage:CGFloat=30.0) -> UIColor? {
+        return self.adjust(by: abs(percentage) )
+    }
+    
+    func adjust(by percentage:CGFloat=30.0) -> UIColor? {
+        var r:CGFloat=0, g:CGFloat=0, b:CGFloat=0, a:CGFloat=0;
+        if self.getRed(&r, green: &g, blue: &b, alpha: &a) {
+            return UIColor(red: min(r + percentage/100, 1.0),
+                           green: min(g + percentage/100, 1.0),
+                           blue: min(b + percentage/100, 1.0),
+                           alpha: 1)
+        }
+        return nil
     }
     
     var redValue: CGFloat{

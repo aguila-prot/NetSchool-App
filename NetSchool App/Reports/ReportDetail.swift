@@ -33,26 +33,122 @@ class ReportDetails: UIViewController {
             "data" : [
             {
             "id" : "1",
-            "subject" : "Russian",
-            "mark_of_class" : "1",
-            "mark_of_student" : "2"
+            "subject" : "Английский язык",
+            "mark_of_class" : "4.92",
+            "mark_of_student" : "5"
             },
             {
             "id" : "2",
-            "subject" : "English",
-            "mark_of_class" : "3",
+            "subject" : "Информатика",
+            "mark_of_class" : "4.16",
+            "mark_of_student" : "3.67"
+            },
+            {
+            "id" : "3",
+            "subject" : "Испанский язык",
+            "mark_of_class" : "5.57",
+            "mark_of_student" : "6.75"
+            },
+            {
+            "id" : "3",
+            "subject" : "Итальянский язык",
+            "mark_of_class" : "5.82",
+            "mark_of_student" : ""
+            },
+            {
+            "id" : "3",
+            "subject" : "Литература",
+            "mark_of_class" : "4.45",
             "mark_of_student" : "4"
             },
             {
             "id" : "3",
-            "subject" : "Biology",
+            "subject" : "Немецкий язык",
             "mark_of_class" : "5",
+            "mark_of_student" : ""
+            },
+            {
+            "id" : "3",
+            "subject" : "Русский язык",
+            "mark_of_class" : "4.25",
+            "mark_of_student" : "3.5"
+            },
+            {
+            "id" : "3",
+            "subject" : "Французский язык",
+            "mark_of_class" : "6",
+            "mark_of_student" : ""
+            },
+            {
+            "id" : "3",
+            "subject" : "Алгебра",
+            "mark_of_class" : "5.17",
+            "mark_of_student" : "4.75"
+            },
+            {
+            "id" : "3",
+            "subject" : "Геометрия",
+            "mark_of_class" : "5.31",
+            "mark_of_student" : "5.5"
+            },
+            {
+            "id" : "3",
+            "subject" : "Биология",
+            "mark_of_class" : "4.81",
+            "mark_of_student" : "4.5"
+            },
+            {
+            "id" : "3",
+            "subject" : "География",
+            "mark_of_class" : "5.3",
+            "mark_of_student" : "5.67"
+            },
+            {
+            "id" : "3",
+            "subject" : "Физика",
+            "mark_of_class" : "4.59",
+            "mark_of_student" : "4.75"
+            },
+            {
+            "id" : "3",
+            "subject" : "Финансовая литература",
+            "mark_of_class" : "5.7",
+            "mark_of_student" : "5.33"
+            },
+            {
+            "id" : "3",
+            "subject" : "История",
+            "mark_of_class" : "5.61",
+            "mark_of_student" : "5.5"
+            },
+            {
+            "id" : "3",
+            "subject" : "ИЗО",
+            "mark_of_class" : "5.15",
+            "mark_of_student" : ""
+            },
+            {
+            "id" : "3",
+            "subject" : "Музыка",
+            "mark_of_class" : "5.83",
+            "mark_of_student" : ""
+            },
+            {
+            "id" : "3",
+            "subject" : "Физкультура",
+            "mark_of_class" : "5.49",
+            "mark_of_student" : "6.5"
+            },
+            {
+            "id" : "3",
+            "subject" : "Дизайн",
+            "mark_of_class" : "5.78",
             "mark_of_student" : "6"
             }
             ]
             }
             """
-            openTableFromJSON(data, name: "CollectionViewControllerMiddleMarks", type: 1)
+            openTableFromJSON(data, type: 1)
         case .dinamicMiddleMark:
             if selectedIndex[0] == 0 {
                 let data = """
@@ -79,7 +175,7 @@ class ReportDetails: UIViewController {
                 ]
                 }
                 """
-                openTableFromJSON(data, name: "CollectionViewControllerMiddleMarks", type: 1)
+                openTableFromJSON(data, type: 1)
             } else {
                 let data = """
                 {
@@ -108,7 +204,7 @@ class ReportDetails: UIViewController {
                 ]
                 }
                 """
-                openTableFromJSON(data, name: "CollectionViewControllerDynamicMiddleMarks", type: 3)
+                openTableFromJSON(data, type: 3)
             }
         case .reportWithSubjects:
             let data = """
@@ -123,13 +219,43 @@ class ReportDetails: UIViewController {
             {
             "type" : "Срезовая работа",
             "theme" : "Classwork. To write a frequency table and then to draw frequency histogram and polygon",
+            "date" : "15.09.2017",
+            "mark" : "5"
+            },
+            {
+            "type" : "Домашняя работа",
+            "theme" : "Intrernational Mathematics 3, p85, N3:s),t)+N4:n),o)+N5:o),p)+N6:h),i)",
+            "date" : "03.10.2017",
+            "mark" : "3"
+            },
+            {
+            "type" : "Домашняя работа",
+            "theme" : "Algebra-Geometry 7: p22, N4:e), N5:b), N6:d),e),f),g),i), p23, N8:h)",
+            "date" : "05.10.2017",
+            "mark" : "4"
+            },
+            {
+            "type" : "Срезовая работа",
+            "theme" : "(A)Test on equations and algebraic expressions",
+            "date" : "06.10.2017",
+            "mark" : "6"
+            },
+            {
+            "type" : "Домашняя работа",
+            "theme" : "International Maths 3, p350, N3:a),d)",
             "date" : "12.10.2017",
+            "mark" : "1"
+            },
+            {
+            "type" : "Домашняя работа",
+            "theme" : "book: Algebra-Geometry 7, p62:N6, N9, N11, N13+Deadline for task:'What does y=mx+c tell us    ",
+            "date" : "17.10.2017",
             "mark" : "5"
             }
             ]
             }
             """
-            openTableFromJSON(data, name: "CollectionViewControllerProgressWork", type: 4)
+            openTableFromJSON(data, type: 4)
         case .parentLetter:
             let data = """
             {
@@ -176,7 +302,7 @@ class ReportDetails: UIViewController {
             ]
             }
             """
-            openTableFromJSON(data, name: "CollectionViewControllerInfoForParents", type: 6)
+            openTableFromJSON(data, type: 6)
         default:
             ()
         }
@@ -234,22 +360,6 @@ extension ReportDetails: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        switch reportType {
-//        case .middleMark, .dinamicMiddleMark:
-//            let oldIndex = selectedIndex
-//            if let cell = tableView.cellForRow(at: IndexPath(row: oldIndex, section: 0)) {
-//                cell.accessoryType = .none
-//                if oldIndex != indexPath.row {
-//                    selectionFeedback()
-//                }
-//            }
-//            if let cell = tableView.cellForRow(at: indexPath) {
-//                cell.accessoryType = .checkmark
-//            }
-//            tableView.deselectSelectedRow
-//            selectedIndex = indexPath.row
-//        default: ()
-//        }
         let oldIndex = selectedIndex[indexPath.section]
         if let cell = tableView.cellForRow(at: IndexPath(row: oldIndex, section: indexPath.section)) {
             cell.accessoryType = .none
