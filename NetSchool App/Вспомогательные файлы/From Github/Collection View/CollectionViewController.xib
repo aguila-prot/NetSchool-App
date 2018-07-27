@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CollectionViewController" customModule="NetSchool_App" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="IGm-uP-jnG" id="dRO-Et-75h"/>
+                <outlet property="collectionViewTopConstraint" destination="bQz-iq-Sea" id="Vxi-eH-UaY"/>
                 <outlet property="view" destination="iN0-l3-epB" id="K0q-Z3-X32"/>
             </connections>
         </placeholder>

@@ -6,12 +6,17 @@ class CollectionViewController: UIViewController {
     var type = 0
     var columnWidth: [CGFloat] = []
     var rowHeights: [CGFloat] = []
+    @IBOutlet weak var collectionViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.register(UINib(nibName: "ContentCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "cell")
         collectionView.collectionViewLayout = CustomCollectionViewLayout(type, rowHeights: rowHeights, columnWidth: columnWidth)
+        if #available(iOS 11.0, *),
+            let topPadding = UIApplication.shared.keyWindow?.safeAreaInsets.top, topPadding > 0 {
+                collectionViewTopConstraint.constant = topPadding/2 + 2
+        }
     }
 }
 

@@ -55,8 +55,12 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     }
     
     override func prepare() {
-        guard let collectionView = collectionView, collectionView.numberOfSections != 0 else {
-                return
+        guard let collectionView = collectionView else {
+            return
+        }
+        
+        if collectionView.numberOfSections == 0 {
+            return
         }
         
         if itemAttributes.count != collectionView.numberOfSections {
@@ -71,6 +75,11 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
                 }
                 
                 let attributes = layoutAttributesForItem(at: IndexPath(item: item, section: section))!
+                if section == 0 {
+                    var frame = attributes.frame
+                    frame.origin.y = collectionView.contentOffset.y
+                    attributes.frame = frame
+                }
                 
                 if item == 0 {
                     var frame = attributes.frame
@@ -96,6 +105,7 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
             let filteredArray = section.filter { obj -> Bool in
                 return rect.intersects(obj.frame)
             }
+            
             attributes.append(contentsOf: filteredArray)
         }
         
@@ -137,12 +147,11 @@ extension CustomCollectionViewLayout {
                     attributes.zIndex = 1023
                 }
                 
-//                if section == 0 {
-//                    var frame = attributes.frame
-//                    frame.origin.y = collectionView.contentOffset.y
-//                    attributes.frame = frame
-//                }
-                
+                if section == 0 {
+                    var frame = attributes.frame
+                    frame.origin.y = collectionView.contentOffset.y
+                    attributes.frame = frame
+                }
                 if index == 0 {
                     var frame = attributes.frame
                     frame.origin.x = collectionView.contentOffset.x
