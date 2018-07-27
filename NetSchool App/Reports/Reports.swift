@@ -315,15 +315,15 @@ extension Reports: UITableViewDataSource, UITableViewDelegate {
                 "subjects": [
                 {
                 "name": "France",
-                "marks": [ "1", "2", "3", "F"]
+                "marks": [ "1"]
                 },
                 {
                 "name": "Chem",
-                "marks": [ "1", "2", "3", "C"]
+                "marks": [ "3", "C"]
                 },
                 {
                 "name": "Geogr",
-                "marks": [ "1", "2", "3", "G"]
+                "marks": [ "2"]
                 }
                 ]
                 },
@@ -332,15 +332,15 @@ extension Reports: UITableViewDataSource, UITableViewDelegate {
                 "subjects": [
                 {
                 "name": "Sport",
-                "marks": [ "1", "2", "3", "S"]
+                "marks": [ "S"]
                 },
                 {
                 "name": "Box",
-                "marks": [ "1", "2", "3", "B"]
+                "marks": [ "1"]
                 },
                 {
                 "name": "Fuck",
-                "marks": [ "1", "2", "3", "Fu"]
+                "marks": ["3"]
                 }
                 ]
                 }

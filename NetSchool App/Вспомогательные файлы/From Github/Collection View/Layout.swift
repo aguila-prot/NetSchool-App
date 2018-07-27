@@ -16,35 +16,41 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     var columnWidth: [CGFloat] = []
     var maxWidth:CGFloat = 0
     var contentSize: CGSize = .zero
+    var columnWidthSum: CGFloat = 0
     
-    init(_ type: Int) {
+    init(_ type: Int, rowHeights: [CGFloat], columnWidth: [CGFloat]) {
         super.init()
+        self.rowHeights = rowHeights
+        self.columnWidth = columnWidth
+        numberOfColumns = columnWidth.count
         switch type {
         case 0:
             self.reportType = .totalMarks
-            numberOfColumns = 8
+            columnWidthSum = 575 + columnWidth[0]
         case 1:
             self.reportType = .middleMark
-            numberOfColumns = 3
+            columnWidthSum = 290 + columnWidth[0]
         case 3:
             self.reportType = .dinamicMiddleMark
             numberOfColumns = 5
         case 4:
             self.reportType = .progress
-            numberOfColumns = 4
+            columnWidthSum = 355 + columnWidth[0]
         case 5:
-            self.reportType = .attendanceAndProgress
-            numberOfColumns = 7
+            self.reportType = .parentsLetter
+            numberOfColumns = 11
         case 6:
             self.reportType = .classJournal
             numberOfColumns = 7
         case 7:
-            self.reportType = .parentsLetter
-            numberOfColumns = 11
+            self.reportType = .attendanceAndProgress
+            for width in columnWidth {
+                columnWidthSum += width + 10
+            }
         default:
             ()
         }
-        
+        updateColumnWidth()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -109,10 +115,6 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
 extension CustomCollectionViewLayout {
     
     func generateItemAttributes(collectionView: UICollectionView) {
-//        if itemsSize.count != numberOfColumns {
-//            calculateItemSizes()
-//        }
-        calculateItemSizes()
         
         var column = 0
         var xOffset: CGFloat = 0
@@ -167,85 +169,11 @@ extension CustomCollectionViewLayout {
         }
     }
     
-    func calculateItemSizes() {
-        columnWidth.removeAll()
+    func updateColumnWidth() {
+        let width = collectionView?.frame.width ?? 0
+        let ratio = width < columnWidthSum ? 1 : width / columnWidthSum
         for index in 0..<numberOfColumns {
-            columnWidth.append(widthForItemWithColumnIndex(index))
+            columnWidth[index] *= ratio
         }
     }
-    
-    func widthForItemWithColumnIndex(_ columnIndex: Int) -> CGFloat {
-        func calculateRatio(_ amount: CGFloat) -> CGFloat {
-            let sum = maxWidth + amount
-            let width = collectionView?.frame.width ?? 0
-            return width < sum ? 1 : width / sum
-        }
-        switch reportType {
-        case .totalMarks:
-            // Each column width plus 10*columnsCount
-            let ratio = calculateRatio(575)
-            switch columnIndex {
-            case 0: return (maxWidth+10)*ratio
-            case 1,2,3,4: return 70*ratio
-            default: return 75*ratio
-            }
-        case .middleMark:
-            let ratio = calculateRatio(290)
-            switch columnIndex {
-            case 0: return (maxWidth+10)*ratio
-            default: return 130*ratio
-            }
-        case .dinamicMiddleMark:
-            ()
-        case .progress:
-            let ratio = calculateRatio(355)
-            switch columnIndex {
-            case 0: return (maxWidth+10)*ratio
-            case 1: return 200*ratio
-            case 2: return 100*ratio
-            case 3: return 45*ratio
-            default: return 0
-            }
-//        case .attendanceAndProgress:
-//            var text: [NSString] = ["Информатика"]
-//            for _ in 0...numberOfColumns-2{
-//                text.append("04.03")
-//            }
-//            var sum: CGFloat = 0
-//            for k in text{
-//                sum += (k.size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width + 10)
-//            }
-//            let width: CGFloat = text[columnIndex != 0 ? 1 : 0].size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width + 10
-//            let koff: CGFloat = (collectionView?.frame.width)! / sum < 1 ? 1 : (collectionView?.frame.width)! / sum
-//            return CGSize(width: width*koff, height: 30)
-//        case .classJournal:
-//            var text: [NSString] = ["Класс", "Физическая культура", "24.05.2018 19:31", "Дурмамбаевский К.Г", "Занятие в расписании", "1 четверть", "Действие"]
-//            var sum: CGFloat = 0
-//            for k in text{
-//                sum += (k.size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width + 10)
-//            }
-//            let width: CGFloat = text[columnIndex].size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width + 10
-//
-//            let koff: CGFloat = (collectionView?.frame.width)! / sum < 1 ? 1 : (collectionView?.frame.width)! / sum
-//            return CGSize(width: width*koff, height: 30)
-//        case .parentsLetter:
-//            var text: [NSString] = ["Предмет"]
-//            for _ in 0...numberOfColumns-4{
-//                text.append("33")
-//            }
-//            text.append("Ср. балл")
-//            text.append("Итоговый")
-//            var sum: CGFloat = 0
-//            for k in text{
-//                sum += (k.size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width + 10)
-//            }
-//            let width: CGFloat = text[columnIndex].size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width + 10
-//            let koff: CGFloat = (collectionView?.frame.width)! / sum < 1 ? 1 : (collectionView?.frame.width)! / sum
-//            return CGSize(width: width*koff, height: 30)
-        default:
-            ()
-        }
-        return 0
-    }
-    
 }

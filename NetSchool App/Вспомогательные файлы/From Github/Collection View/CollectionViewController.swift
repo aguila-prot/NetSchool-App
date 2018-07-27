@@ -5,17 +5,14 @@ class CollectionViewController: UIViewController {
     fileprivate static let contentCellIdentifier = "ContentCellIdentifier"
     var data: TableData = TableData(countOfSections: 0, countOfRows: 0, data: [[""]])
     var type = 0
-    var maxWidth:CGFloat = 0
+    var columnWidth: [CGFloat] = []
     var rowHeights: [CGFloat] = []
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.register(UINib(nibName: "ContentCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: CollectionViewController.contentCellIdentifier)
-        let layout = CustomCollectionViewLayout(type)
-        layout.rowHeights = rowHeights
-        layout.maxWidth = maxWidth
-        collectionView.collectionViewLayout = layout
+        collectionView.collectionViewLayout = CustomCollectionViewLayout(type, rowHeights: rowHeights, columnWidth: columnWidth)
     }
 
 }

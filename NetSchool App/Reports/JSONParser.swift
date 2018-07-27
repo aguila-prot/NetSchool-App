@@ -14,20 +14,21 @@ class JSONParser{
     var countOfSections: Int?
     var countOfRows: Int?
     var rowHeights: [CGFloat] = []
-    var maxWidth:CGFloat = 0
+    var columnWidth: [CGFloat] = [70]
+//    var maxWidth:CGFloat = 0
     
     init(data: String, type:Int){
         self.data = data
         self.inputData = data.data(using: .utf8)!
         switch type {
         case 0: marks()
-        case 1: middle_marks()
-        case 2: dynamic_middle_marks_t()
-        case 3: dynamic_middle_marks_sb()
-        case 4: progress_work()
-        case 5: permission_to_journal()
-        case 6: info_for_parents()
-        case 7: big_journal()
+        case 1: middleMarks()
+        case 2: dynamicMiddleMarksT()
+        case 3: dynamicMiddleMarksSB()
+        case 4: progress()
+        case 5: classJournal()
+        case 6: parentsLetter()
+        case 7: attendanceAndProgress()
         default: ()
         }
         countOfRows = result[0].count
@@ -38,7 +39,7 @@ class JSONParser{
         let components = topic.components(separatedBy: " ")
         for component in components {
             let length = component.size(withAttributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14.0)]).width
-            maxWidth = max(maxWidth, length)
+            columnWidth[0] = max(columnWidth[0], length)
         }
     }
     
@@ -50,40 +51,40 @@ class JSONParser{
             let attributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14)]
             label.attributedText = NSMutableAttributedString(string: row[index], attributes: attributes)
             label.sizeToFit()
-            rowHeights.append(max(label.frame.height, 45))
+            rowHeights.append(max(label.frame.height + 10, 45))
         }
     }
     
     func marks(){
         let json = try! decoder.decode(Marks.self, from: inputData)
         result.append(["Предмет", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Годовая", "Экзамен","Итоговая"])
-        updateMaxWidth(topic: "Предмет")
         for row in json.table {
             result.append([row.subject, row.period1, row.period2, row.period3, row.period4, row.year, row.exam, row.final])
             updateMaxWidth(topic: row.subject)
         }
-        updateRowHeights(width: maxWidth)
+        updateRowHeights(width: columnWidth[0])
+        columnWidth = [columnWidth[0]+10, 70, 70, 70, 70, 75, 75, 75]
     }
     
-    func middle_marks(){
+    func middleMarks(){
         let json = try! decoder.decode(MiddleMarks.self, from: inputData)
         result.append(["Предмет", "Ср. балл ученика", "Ср. балл класса"])
-        updateMaxWidth(topic: "Предмет")
         for row in json.data {
             result.append([row.subject, row.mark_of_student, row.mark_of_class])
             updateMaxWidth(topic: row.subject)
         }
-        updateRowHeights(width: maxWidth)
+        updateRowHeights(width: columnWidth[0])
+        columnWidth = [columnWidth[0]+10, 130, 130]
     }
     
-    func dynamic_middle_marks_t() {
+    func dynamicMiddleMarksT() {
         let json = try! decoder.decode(DynamicMiddleMarksT.self, from: inputData)
         result.append(["Период", "Балл ученика", "Балл класса"])
         for i in json.data{
             result.append([i.period, i.mark_of_student, i.mark_of_class])
         }
     }
-    func dynamic_middle_marks_sb(){
+    func dynamicMiddleMarksSB(){
         let json = try! decoder.decode(DynamicMiddleMarksSB.self, from: inputData)
         result.append(["Дата", "Кол-во срезовых работ ученика", "Балл ученика", "Кол-во срезовых работ класса", "Балл класса"])
         for i in json.data {
@@ -91,7 +92,7 @@ class JSONParser{
         }
     }
     
-    func progress_work(){
+    func progress(){
         let json = try! decoder.decode(Work.self, from: inputData)
         result.append(["Тип задания", "Тема задания", "Дата", "Балл"])
         updateMaxWidth(topic: "Тип задания")
@@ -100,20 +101,21 @@ class JSONParser{
             updateMaxWidth(topic: row.type)
         }
         updateRowHeights(index: 1, width: 200)
+        columnWidth = [columnWidth[0]+10, 200, 100, 45]
     }
     
-    func permission_to_journal(){
+    func classJournal(){
         let json = try! decoder.decode(JournalTable.self, from: inputData)
         result.append(["Класс", "Предмет", "Дата", "Пользователь", "Занятие в расписании", "Период", "Действие"])
-        for i in json.line{
+        for i in json.line {
             result.append([i.class_number, i.lesson, i.date_time, i.user, i.info, i.period, i.type])
         }
     }
     
-    func info_for_parents(){
+    func parentsLetter() {
         let json = try! decoder.decode(InfoForParents.self, from: inputData)
         result.append(["Предмет"])
-        for i in json.data[0].mark_info{
+        for i in json.data[0].mark_info {
             result[0].append(i.mark)
         }
         result[0].append("Ср. балл")
@@ -159,40 +161,53 @@ class JSONParser{
         }
     }
     
-    func big_journal(){
+    func attendanceAndProgress() {
         let json = try! decoder.decode(BigJournal.self, from: inputData)
         var dates: [String] = []
-        var set_sub = Set<String>()
-        var subject = [String: Dictionary<String, String>]()
-        var i: Int = 1
+        var setOfSubjects = Set<String>()
+        var subjectMarksToDates = [String: Dictionary<String, String>]()
+        var index = 1
         result.append(["Предмет"])
-        for j in json.table.months{
-            for l in j.days{
-                dates.append(month_to_number(data: j.name)  + "." + l.number)
+        for month in json.table.months {
+            for day in month.days {
+                dates.append(day.number + "." + month_to_number(data: month.name))
                 result[0].append(dates.last!)
-                for m in l.subjects{
-                    set_sub.insert(m.name)
-                    var full_mark: String = ""
-                    for u in m.marks{
-                        full_mark += u
+                var maxWidthForColumn:CGFloat = 45
+                for subject in day.subjects {
+                    setOfSubjects.insert(subject.name)
+                    var fullMark: String = " "
+                    for mark in subject.marks {
+                        fullMark += mark + " "
                     }
-                    if subject[m.name] == nil{
-                        subject[m.name] = Dictionary<String, String>()
+                    let length = fullMark.size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width
+                    maxWidthForColumn = max(maxWidthForColumn, length)
+                    if subjectMarksToDates[subject.name] == nil {
+                        subjectMarksToDates[subject.name] = Dictionary<String, String>()
                     }
-                    subject[m.name]![dates.last!] = full_mark
+                    subjectMarksToDates[subject.name]![dates.last!] = fullMark
+                }
+                columnWidth.append(maxWidthForColumn)
+            }
+        }
+        var maxSubjectWidth: CGFloat = 70
+        for subject in setOfSubjects {
+            let length = subject.size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width
+            maxSubjectWidth = max(maxSubjectWidth, length)
+            result.append([subject])
+            for date in dates {
+                if let marks = subjectMarksToDates[subject]?[date] {
+                    result[index].append(marks)
+                } else {
+                    result[index].append("")
                 }
             }
+            index += 1
         }
-        for s in set_sub {
-            result.append([s])
-            for d in dates {
-                result[i].append(subject[s]![d] == nil ? "" : subject[s]![d]!)
-            }
-            i+=1
-        }
+        columnWidth[0] = maxSubjectWidth
+        updateRowHeights(width: columnWidth[0])
     }
     
-    func parsedData() -> (data:[[String]], countOfSections:Int?, countOfRows:Int?, rowHeights: [CGFloat], maxWidth: CGFloat){
-        return (result, countOfSections, countOfRows, rowHeights, maxWidth)
+    func parsedData() -> (data:[[String]], countOfSections:Int?, countOfRows:Int?, rowHeights: [CGFloat], columnWidth: [CGFloat]) {
+        return (result, countOfSections, countOfRows, rowHeights, columnWidth)
     }
 }

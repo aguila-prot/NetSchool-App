@@ -153,7 +153,7 @@ extension UIViewController {
         let table:TableData = TableData(countOfSections: parsedData.countOfSections ?? 0, countOfRows: parsedData.countOfRows ?? 0, data: parsedData.data)
         mainController.data = table
         mainController.rowHeights = parsedData.rowHeights
-        mainController.maxWidth = parsedData.maxWidth
+        mainController.columnWidth = parsedData.columnWidth
         show(mainController)
     }
 }
