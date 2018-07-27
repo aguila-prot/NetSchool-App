@@ -1,13 +1,3 @@
-//
-//  AppDelegate.swift
-//  NetSchool App
-//
-//  Created by Кирилл Руднев on 29.06.2018.
-//  Copyright © 2018 Руднев Кирилл. All rights reserved.
-//
-
-
-
 import UIKit
 import CoreData
 

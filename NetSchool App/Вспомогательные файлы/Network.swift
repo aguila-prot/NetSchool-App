@@ -1,11 +1,3 @@
-//
-//  Network.swift
-//  NetSchool App
-//
-//  Created by Кирилл Руднев on 06.07.2018.
-//  Copyright © 2018 Руднев Кирилл. All rights reserved.
-//
-
 import Reachability
 
 /// Enumeration represents data loading status

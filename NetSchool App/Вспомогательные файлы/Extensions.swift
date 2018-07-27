@@ -1,11 +1,3 @@
-//
-//  Extensions.swift
-//  NetSchool App
-//
-//  Created by Кирилл Руднев on 04.07.2018.
-//  Copyright © 2018 Руднев Кирилл. All rights reserved.
-//
-
 import Foundation
 import SafariServices
 
@@ -150,8 +142,8 @@ extension UIViewController {
         mainController.type = type
         let json = JSONParser(data:data, type: type)
         let parsedData = json.parsedData()
-        let table:TableData = TableData(countOfSections: parsedData.countOfSections ?? 0, countOfRows: parsedData.countOfRows ?? 0, data: parsedData.data)
-        mainController.data = table
+//        let table:TableData = TableData(countOfSections: parsedData.countOfSections ?? 0, countOfRows: parsedData.countOfRows ?? 0, data: parsedData.data)
+        mainController.data = parsedData.data
         mainController.rowHeights = parsedData.rowHeights
         mainController.columnWidth = parsedData.columnWidth
         show(mainController)

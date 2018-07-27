@@ -6,17 +6,14 @@ enum ReportCollectionViewType {
 
 class CustomCollectionViewLayout: UICollectionViewLayout {
     
-    var numberOfColumns = 0
-    var shouldPinFirstColumn = true
-    var shouldPinFirstRow = true
     var reportType: ReportCollectionViewType = .undefined
-    
-    var itemAttributes = [[UICollectionViewLayoutAttributes]]()
     var rowHeights: [CGFloat] = []
     var columnWidth: [CGFloat] = []
-    var maxWidth:CGFloat = 0
-    var contentSize: CGSize = .zero
-    var columnWidthSum: CGFloat = 0
+    
+    private var itemAttributes = [[UICollectionViewLayoutAttributes]]()
+    private var numberOfColumns = 0
+    private var contentSize: CGSize = .zero
+    private var columnWidthSum: CGFloat = 0
     
     init(_ type: Int, rowHeights: [CGFloat], columnWidth: [CGFloat]) {
         super.init()
@@ -139,6 +136,13 @@ extension CustomCollectionViewLayout {
                     // First row/column should be above other cells
                     attributes.zIndex = 1023
                 }
+                
+//                if section == 0 {
+//                    var frame = attributes.frame
+//                    frame.origin.y = collectionView.contentOffset.y
+//                    attributes.frame = frame
+//                }
+                
                 if index == 0 {
                     var frame = attributes.frame
                     frame.origin.x = collectionView.contentOffset.x

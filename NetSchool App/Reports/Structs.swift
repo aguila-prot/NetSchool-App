@@ -1,10 +1,3 @@
-//
-//  Structs.swift
-//  NetSchool App
-//
-//  Created by Arthur on 16.07.2018.
-//  Copyright © 2018 Руднев Кирилл. All rights reserved.
-//
 //////////////ИТОГОВЫЕ ОТМЕТКИ//////////////
 struct TableMarks: Codable{
     let subject: String
