@@ -197,7 +197,7 @@ class Login: UIViewController, UITextFieldDelegate {
                         self.setError(error?.localizedDescription ?? "Нет ответа")
                         errorFeedback()
                     }
-                    return
+                return
             }
             let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields, for: response!.url!)
             guard cookies.count == 2 else {
@@ -227,7 +227,7 @@ class Login: UIViewController, UITextFieldDelegate {
                 self.stopActivityIndicatior()
                 self.dismiss()
             }
-            }.resume()
+        }.resume()
     }
     
     private func stopActivityIndicatior() {

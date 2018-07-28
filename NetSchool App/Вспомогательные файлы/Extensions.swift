@@ -28,14 +28,6 @@ extension UITableView {
     }
 }
 
-extension UIRefreshControl {
-    var stop: Void {
-        if self.isRefreshing {
-            self.endRefreshing()
-        }
-    }
-}
-
 extension UITableViewCell {
     var setSelection: Void {
         let myBackView = UIView(frame: self.frame)
@@ -395,6 +387,14 @@ extension Int {
             case 2...4: return " сообщения"
             default: return " сообщений"
             }
+        }
+    }
+}
+
+extension UIRefreshControl {
+    var stop: Void {
+        if self.isRefreshing {
+            self.endRefreshing()
         }
     }
 }

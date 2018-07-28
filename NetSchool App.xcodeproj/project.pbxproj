@@ -37,7 +37,7 @@
 		ED30F2E52107899E0065BBC8 /* LaunchScreeniPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED30F2E42107899E0065BBC8 /* LaunchScreeniPad.storyboard */; };
 		ED30F3112107923D0065BBC8 /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED30F30E2107923D0065BBC8 /* Structs.swift */; };
 		ED30F3122107923D0065BBC8 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED30F30F2107923D0065BBC8 /* JSONParser.swift */; };
-		ED6809C8210CF8BD003148C7 /* md5.js in Resources */ = {isa = PBXBuildFile; fileRef = ED6809C7210CF8BD003148C7 /* md5.js */; };
+		ED561BA4210BD6DE00DF0701 /* md5.js in Resources */ = {isa = PBXBuildFile; fileRef = ED561BA3210BD6DE00DF0701 /* md5.js */; };
 		ED6E575720F0CB7D0002C7BD /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6E575620F0CB7D0002C7BD /* WebView.swift */; };
 		ED6E575920F0CC2C0002C7BD /* Details.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6E575820F0CC2C0002C7BD /* Details.swift */; };
 		EDC510252109E65C00270BCA /* ContentCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EDC510142109E65C00270BCA /* ContentCollectionViewCell.xib */; };
@@ -90,7 +90,7 @@
 		ED30F2E42107899E0065BBC8 /* LaunchScreeniPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreeniPad.storyboard; sourceTree = "<group>"; };
 		ED30F30E2107923D0065BBC8 /* Structs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
 		ED30F30F2107923D0065BBC8 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
-		ED6809C7210CF8BD003148C7 /* md5.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = md5.js; sourceTree = "<group>"; };
+		ED561BA3210BD6DE00DF0701 /* md5.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = md5.js; sourceTree = "<group>"; };
 		ED6E575620F0CB7D0002C7BD /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		ED6E575820F0CC2C0002C7BD /* Details.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Details.swift; sourceTree = "<group>"; };
 		EDC510142109E65C00270BCA /* ContentCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ContentCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -216,7 +216,7 @@
 				ED05E0F820E69F6B00A632ED /* LaunchScreen.storyboard */,
 				ED05E0F320E69F6800A632ED /* NetSchool_App.xcdatamodeld */,
 				ED30F2E42107899E0065BBC8 /* LaunchScreeniPad.storyboard */,
-				ED6809C7210CF8BD003148C7 /* md5.js */,
+				ED561BA3210BD6DE00DF0701 /* md5.js */,
 			);
 			name = "Вспомогательные файлы";
 			path = "Вспомогательные файлы";
@@ -417,7 +417,7 @@
 				ED30F2E52107899E0065BBC8 /* LaunchScreeniPad.storyboard in Resources */,
 				EDC510252109E65C00270BCA /* ContentCollectionViewCell.xib in Resources */,
 				ED05E0FA20E69F6B00A632ED /* LaunchScreen.storyboard in Resources */,
-				ED6809C8210CF8BD003148C7 /* md5.js in Resources */,
+				ED561BA4210BD6DE00DF0701 /* md5.js in Resources */,
 				ED05E14220ED5DC300A632ED /* Blogger_Sans-Light.ttf in Resources */,
 				ED05E0F720E69F6B00A632ED /* Assets.xcassets in Resources */,
 				ED05E14320ED5DC600A632ED /* Blogger_Sans-Bold.ttf in Resources */,

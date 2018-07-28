@@ -32,7 +32,7 @@ class DiaryContentViewController: UIViewController {
     private var goToLogin = false
     var actionIndexPath = IndexPath(row: 0, section: 0)
     /// used to cancel URLSessionTask
-    private var task: URLSessionTask?
+    private var task: URLSessionTask?    
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.deselectSelectedRow
@@ -68,7 +68,7 @@ class DiaryContentViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(loadData), for:  .valueChanged)
         tableView.addSubview(refreshControl)
         automaticallyAdjustsScrollViewInsets = false
-        //        bottomConstraint.setBottomConstraint
+//        bottomConstraint.setBottomConstraint
     }
     
     @objc private func loadData() {
@@ -89,11 +89,11 @@ class DiaryContentViewController: UIViewController {
             guard error == nil,
                 let data = data,
                 let httpResponse = response as? HTTPURLResponse else {
-                    DispatchQueue.main.async {
-                        self.status = .error
-                        self.tableView.reloadData()
-                    }
-                    return
+                DispatchQueue.main.async {
+                    self.status = .error
+                    self.tableView.reloadData()
+                }
+                return
             }
             switch httpResponse.statusCode {
             case 200:
@@ -123,7 +123,7 @@ class DiaryContentViewController: UIViewController {
                 self.status = .error
                 self.reloadTable()
             }
-            }.resume()
+        }.resume()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

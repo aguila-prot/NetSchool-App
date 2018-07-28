@@ -7,6 +7,7 @@ class JSONParser {
     private var rowHeights: [CGFloat] = []
     private var columnWidth: [CGFloat] = [70]
     private var status: Int
+    
     init(data: String, type:Int) {
         self.status = 1
         self.data = data
@@ -18,15 +19,17 @@ class JSONParser {
         case 3: dynamicMiddleMarksSB()
         case 4: progress()
         case 5: classJournal()
-        case 6: parentsLetter(type: 0)
+        case 6: parentsLetter()
         case 7: attendanceAndProgress()
-        case 8: parentsLetter(type: 1)
+        case 8: parentsLetter(1)
         default: ()
         }
     }
+    
     private func JSON_Error(){
         self.status = 1
     }
+    
     private func updateMaxWidth(topic: String) {
         let components = topic.components(separatedBy: " ")
         for component in components {
@@ -48,13 +51,12 @@ class JSONParser {
     }
     
     private func marks() {
-        let json = try? decoder.decode(Marks.self, from: inputData)
-        if json == nil{
+        guard let json = try? decoder.decode(Marks.self, from: inputData) else {
             JSON_Error()
             return
         }
         result.append(["Предмет", "Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Годовая", "Экзамен","Итоговая"])
-        for row in (json?.table)! {
+        for row in json.table {
             result.append([row.subject, row.period1, row.period2, row.period3, row.period4, row.year, row.exam, row.final])
             updateMaxWidth(topic: row.subject)
         }
@@ -63,13 +65,12 @@ class JSONParser {
     }
     
     private func middleMarks() {
-        let json = try? decoder.decode(MiddleMarks.self, from: inputData)
-        if json == nil{
+        guard let json = try? decoder.decode(MiddleMarks.self, from: inputData) else {
             JSON_Error()
             return
         }
         result.append(["Предмет", "Ср. балл ученика", "Ср. балл класса"])
-        for row in (json?.data)! {
+        for row in json.data {
             result.append([row.subject, row.mark_of_student, row.mark_of_class])
             updateMaxWidth(topic: row.subject)
         }
@@ -78,25 +79,23 @@ class JSONParser {
     }
     
     private func dynamicMiddleMarksT() {
-        let json = try? decoder.decode(DynamicMiddleMarksT.self, from: inputData)
-        if json == nil{
+        guard let json = try? decoder.decode(DynamicMiddleMarksT.self, from: inputData) else {
             JSON_Error()
             return
         }
         result.append(["Период", "Балл ученика", "Балл класса"])
-        for i in (json?.data)!{
+        for i in json.data{
             result.append([i.period, i.mark_of_student, i.mark_of_class])
         }
     }
     
     private func dynamicMiddleMarksSB() {
-        let json = try? decoder.decode(DynamicMiddleMarksSB.self, from: inputData)
-        if json == nil{
+        guard let json = try? decoder.decode(DynamicMiddleMarksSB.self, from: inputData) else {
             JSON_Error()
             return
         }
         result.append(["Дата", "Кол-во срезовых работ ученика", "Балл ученика", "Кол-во срезовых работ класса", "Балл класса"])
-        for i in (json?.data)! {
+        for i in json.data {
             result.append([i.date, i.amount_of_student, i.mark_of_student, i.amount_of_class, i.mark_of_class])
         }
         updateRowHeights(width: columnWidth[0])
@@ -104,14 +103,13 @@ class JSONParser {
     }
     
     private func progress() {
-        let json = try? decoder.decode(Work.self, from: inputData)
-        if json == nil{
+        guard let json = try? decoder.decode(Work.self, from: inputData) else {
             JSON_Error()
             return
         }
         result.append(["Тип задания", "Тема задания", "Дата", "Балл"])
         updateMaxWidth(topic: "Тип задания")
-        for row in (json?.work)!{
+        for row in json.work{
             result.append([row.type, row.theme, row.date, row.mark])
             updateMaxWidth(topic: row.type)
         }
@@ -120,14 +118,13 @@ class JSONParser {
     }
     
     private func classJournal() {
-        let json = try? decoder.decode(JournalTable.self, from: inputData)
-        if json == nil{
+        guard let json = try? decoder.decode(JournalTable.self, from: inputData) else {
             JSON_Error()
             return
         }
         result.append(["Предмет", "Класс", "Дата", "Пользователь", "Занятие в расписании", "Период", "Действие"])
         var teacherWidth: CGFloat = 100
-        for line in (json?.line)! {
+        for line in json.line {
             result.append([line.lesson, line.class_number, line.date_time, line.user, line.info.replacingOccurrences(of: ",", with: ", "), line.period, line.type])
             let length = line.user.size(withAttributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14.0)]).width
             teacherWidth = max(teacherWidth, length)
@@ -145,9 +142,8 @@ class JSONParser {
         columnWidth = [columnWidth[0]+10, 51, 125, teacherWidth, 170, 85, 75]
     }
     
-    private func parentsLetter(type: Int) {
-        let json = try? decoder.decode(InfoForParents.self, from: inputData)
-        if json == nil{
+    private func parentsLetter(_ type: Int = 0) {
+        guard let json = try? decoder.decode(InfoForParents.self, from: inputData) else {
             JSON_Error()
             return
         }
@@ -155,7 +151,7 @@ class JSONParser {
         var count: [Int] = []
         var full_average: Float = 0
         result.append(["Предмет"])
-        columnWidth = []
+        columnWidth.removeAll()
         columnWidth.append(85)
         let count_of_marks: Int = json!.table[0].marks.count
         for i in stride(from: count_of_marks, through: 1, by: -1) {
@@ -203,7 +199,10 @@ class JSONParser {
     }
     
     private func attendanceAndProgress() {
-        let json = try! decoder.decode(BigJournal.self, from: inputData)
+        guard let json = try? decoder.decode(BigJournal.self, from: inputData) else {
+            JSON_Error()
+            return
+        }
         var dates: [String] = []
         var setOfSubjects = Set<String>()
         var subjectMarksToDates = [String: Dictionary<String, String>]()

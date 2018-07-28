@@ -9,7 +9,7 @@ func isSchemeLight() -> Bool {
 
 func darkSchemeColor(key: Int) -> UIColor {
     guard key < Settings.colorsHEXs.count else {
-        //        setInt(forKey: "Color", val: 1)
+//        setInt(forKey: "Color", val: 1)
         return UIColor.init(hex: Settings.colorsHEXs[1])
     }
     return UIColor.init(hex: Settings.colorsHEXs[key])

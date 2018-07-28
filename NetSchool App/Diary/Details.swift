@@ -9,7 +9,7 @@ enum DetailType {
 
 class Details: UIViewController, UITextViewDelegate {
     
-    //    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
     
     var detailType: DetailType = .undefined
@@ -128,7 +128,7 @@ class Details: UIViewController, UITextViewDelegate {
     }
     
     private func setupUI() {
-        //        bottomConstraint.setBottomConstraint
+//        bottomConstraint.setBottomConstraint
         if #available(iOS 9.0, *), traitCollection.forceTouchCapability == .available {
             registerForPreviewing(with: self, sourceView: tableView)
         }
@@ -192,7 +192,7 @@ class Details: UIViewController, UITextViewDelegate {
         UIApplication.shared.keyWindow?.tintColor = UIColor(hex: "650794")
         switch detailType {
         case .diary:
-            //            if lesson?.homework ?? false { createDoneBTN() }
+//            if lesson?.homework ?? false { createDoneBTN() }
             self.files = [File(link: "", name: "Критерии.pdf", size: nil)]
             var attribute = self.createAttribute(color: self.lesson!.color)
             let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
@@ -259,16 +259,16 @@ class Details: UIViewController, UITextViewDelegate {
         return NSMutableAttributedString(string: string, attributes: attribute )
     }
     
-    //    private func createDoneBTN() {
-    //        let done = UserDefaults.standard.bool(forKey: lesson!.key)
-    //        navigationItem.rightBarButtonItem = createBarButtonItem(imageName: done ? "done_f" : "done_e", selector: #selector(makeDone))
-    //    }
+//    private func createDoneBTN() {
+//        let done = UserDefaults.standard.bool(forKey: lesson!.key)
+//        navigationItem.rightBarButtonItem = createBarButtonItem(imageName: done ? "done_f" : "done_e", selector: #selector(makeDone))
+//    }
     
     private func setDone() {
-        //        let defaults = UserDefaults.standard
-        //        let key = self.lesson!.key
-        //        defaults.set(!defaults.bool(forKey: key), forKey: key)
-        //        defaults.synchronize()
+//        let defaults = UserDefaults.standard
+//        let key = self.lesson!.key
+//        defaults.set(!defaults.bool(forKey: key), forKey: key)
+//        defaults.synchronize()
     }
     
     @objc private func makeDone() {
@@ -276,7 +276,7 @@ class Details: UIViewController, UITextViewDelegate {
         if let diaryVC = diaryVC {
             diaryVC.tableView.reloadRows(at: [diaryVC.actionIndexPath], with: .none)
         }
-        //        createDoneBTN()
+//        createDoneBTN()
     }
     
     fileprivate func updateSize(s: Int64) {
