@@ -28,6 +28,14 @@ extension UITableView {
     }
 }
 
+extension UIRefreshControl {
+    var stop: Void {
+        if self.isRefreshing {
+            self.endRefreshing()
+        }
+    }
+}
+
 extension UITableViewCell {
     var setSelection: Void {
         let myBackView = UIView(frame: self.frame)

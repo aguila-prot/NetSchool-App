@@ -16,30 +16,47 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
     
     init(_ type: Int, rowHeights: [CGFloat], columnWidth: [CGFloat]) {
         super.init()
-        numberOfColumns = columnWidth.count
-        
         self.rowHeights = rowHeights
         self.columnWidth = columnWidth
+        numberOfColumns = columnWidth.count
         switch type {
         case 0:
             self.reportType = .totalMarks
+            columnWidthSum = 575 + columnWidth[0]
         case 1:
             self.reportType = .middleMark
+            columnWidthSum = 290 + columnWidth[0]
         case 3:
             self.reportType = .dinamicMiddleMark
+//            numberOfColumns = 5
         case 4:
             self.reportType = .progress
+            columnWidthSum = 355 + columnWidth[0]
         case 5:
             self.reportType = .classJournal
+//            numberOfColumns = 11
+            print(numberOfColumns)
+            for width in columnWidth {
+                columnWidthSum += width + 10
+            }
         case 6:
             self.reportType = .parentsLetter
+//            numberOfColumns = 7
+            for width in columnWidth {
+                columnWidthSum += width + 10
+            }
         case 7:
             self.reportType = .attendanceAndProgress
+            for width in columnWidth {
+                columnWidthSum += width + 10
+            }
         default:
             ()
         }
-        for width in columnWidth {
-            columnWidthSum += width
+        let width = collectionView?.frame.width ?? 0
+        let ratio = width < columnWidthSum ? 1 : width / columnWidthSum
+        for index in 0..<numberOfColumns {
+            self.columnWidth[index] *= ratio
         }
     }
     
@@ -51,15 +68,12 @@ class CustomCollectionViewLayout: UICollectionViewLayout {
         guard let collectionView = collectionView, collectionView.numberOfSections != 0 else {
             return
         }
-        let width = collectionView.frame.width
-        let ratio = width < columnWidthSum ? 1 : width / columnWidthSum
-        for index in 0..<numberOfColumns {
-            self.columnWidth[index] *= ratio
-        }
+        
         if itemAttributes.count != collectionView.numberOfSections {
             generateItemAttributes(collectionView)
             return
         }
+        
         for section in 0..<collectionView.numberOfSections {
             for item in 0..<collectionView.numberOfItems(inSection: section) {
                 if section != 0 && item != 0 {

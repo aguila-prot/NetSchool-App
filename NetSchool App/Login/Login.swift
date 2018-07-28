@@ -4,6 +4,14 @@ struct School {
     var name, link, letter : String
     var ID : Int
 }
+struct SchoolObject: Codable {
+    let id: Int
+    let name: String
+    let website: String
+}
+struct Schools: Codable {
+    let schools: [SchoolObject]
+}
 
 fileprivate class CustomTextField : UITextField {
     override public var hasText: Bool {
@@ -36,6 +44,13 @@ class Login: UIViewController, UITextFieldDelegate {
     /// used to cancel URLSessionTask
     private var task: URLSessionTask?
     
+    
+    
+    var activityIndicator = UIActivityIndicatorView()
+    var strLabel = UILabel()
+    
+    let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    
     fileprivate var footerTextView = UITextView()
     
     override func viewDidLoad() {
@@ -43,6 +58,15 @@ class Login: UIViewController, UITextFieldDelegate {
         createAndSetupTableView()
         createAndSetupNavigationBar()
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+        clearMemory()
+    }
+    
+    private func clearMemory() {
+        setAny(forKey: "username", val: "")
+        setAny(forKey: "password", val: "")
+        let sessionName = UserDefaults.standard.value(forKey: "sessionName") as? String ?? ""
+        setAny(forKey: "sessionName", val: "")
+        setAny(forKey: sessionName, val: "")
     }
     
     private func setEnterPermission(_ value: Bool) {
@@ -116,7 +140,6 @@ class Login: UIViewController, UITextFieldDelegate {
             sender.cancelsTouchesInView = true
             let adressBookVC = AdressBook()
             adressBookVC.adressBookType = .schoolList
-//            adressBookVC.modalTransitionStyle = .coverVertical
             adressBookVC.loginView = self
             show(adressBookVC)
             return
@@ -158,20 +181,85 @@ class Login: UIViewController, UITextFieldDelegate {
     }
     
     @objc func enterAction() {
-        dismiss()
-//        setError("Неверные данные")
-//        errorFeedback()
-//        guard let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)),
-//            let textField = (cell.subviews.filter{ $0 is UITextField }).first else { return }
-//        dangle(textfield: textField as! UITextField)
-//        guard let cell2 = tableView.cellForRow(at: IndexPath(row: 2, section: 0)),
-//            let textField2 = (cell2.subviews.filter{ $0 is UITextField }).first else { return }
-//        dangle(textfield: textField2 as! UITextField)
-        print(username)
-        print(password)
-        print(school!.name)
-        print(school!.ID)
-        print(school!.link)
+        let hashedPassword = hashMD5(password)
+        let jsonData = try? JSONSerialization.data(withJSONObject: ["login": username, "passkey": hashedPassword, "id": school?.ID ?? -5])
+        var request = URLRequest(url: URL(string: "http://77.73.26.195:8000/sign_in")!)
+        request.httpMethod = "POST"
+        request.httpBody = jsonData
+        let date = Date()
+        activityIndicator("Авторизация")
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            guard error == nil,
+                let httpResponse = response as? HTTPURLResponse,
+                let fields = httpResponse.allHeaderFields as? [String : String] else {
+                    DispatchQueue.main.async {
+                        self.stopActivityIndicatior()
+                        self.setError(error?.localizedDescription ?? "Нет ответа")
+                        errorFeedback()
+                    }
+                    return
+            }
+            let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields, for: response!.url!)
+            guard cookies.count == 2 else {
+                print("No cookie")
+                DispatchQueue.main.async {
+                    self.stopActivityIndicatior()
+                    self.setError("Неверные данные")
+                    errorFeedback()
+                    guard let cell = self.tableView.cellForRow(at: IndexPath(row: 1, section: 0)),
+                        let textField = (cell.subviews.filter{ $0 is UITextField }).first else { return }
+                    dangle(textfield: textField as! UITextField)
+                    guard let cell2 = self.tableView.cellForRow(at: IndexPath(row: 2, section: 0)),
+                        let textField2 = (cell2.subviews.filter{ $0 is UITextField }).first else { return }
+                    dangle(textfield: textField2 as! UITextField)
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                for cookie in cookies {
+                    setAny(forKey: cookie.name, val: cookie.value)
+                    print("name: \(cookie.name) value: \(cookie.value)")
+                }
+                setAny(forKey: "username", val: self.username)
+                setAny(forKey: "password", val: hashedPassword)
+                print(-date.timeIntervalSinceNow)
+                print("successful authorization")
+                self.stopActivityIndicatior()
+                self.dismiss()
+            }
+            }.resume()
+    }
+    
+    private func stopActivityIndicatior() {
+        effectView.removeFromSuperview()
+    }
+    
+    private func activityIndicator(_ title: String) {
+        
+        strLabel.removeFromSuperview()
+        activityIndicator.removeFromSuperview()
+        effectView.removeFromSuperview()
+        
+        strLabel = UILabel(frame: CGRect(x: 50, y: 0, width: 160, height: 46))
+        strLabel.text = title
+        if #available(iOS 8.2, *) {
+            strLabel.font = .systemFont(ofSize: 14, weight: .medium)
+        } else {
+            strLabel.font = .systemFont(ofSize: 14)
+        }
+        strLabel.textColor = UIColor(white: 0.9, alpha: 0.7)
+        
+        effectView.frame = CGRect(x: view.frame.midX - strLabel.frame.width/2, y: view.frame.midY - strLabel.frame.height/2 , width: 160, height: 46)
+        effectView.layer.cornerRadius = 15
+        effectView.layer.masksToBounds = true
+        
+        activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: 46, height: 46)
+        activityIndicator.startAnimating()
+        
+        effectView.contentView.addSubview(activityIndicator)
+        effectView.contentView.addSubview(strLabel)
+        view.addSubview(effectView)
     }
     
     fileprivate func getFooterText() -> NSMutableAttributedString {
@@ -244,7 +332,7 @@ extension Login: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { return 100 }//23 }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat { return 100 }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 23))

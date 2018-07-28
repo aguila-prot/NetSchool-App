@@ -9,7 +9,7 @@ enum DetailType {
 
 class Details: UIViewController, UITextViewDelegate {
     
-//    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    //    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
     
     var detailType: DetailType = .undefined
@@ -57,9 +57,9 @@ class Details: UIViewController, UITextViewDelegate {
     override var previewActionItems: [UIPreviewActionItem] {
         switch detailType {
         case .diary:
-            if lesson?.homework ?? false {
+            if lesson?.isHomework ?? false {
                 let defaults = UserDefaults.standard
-                let not = defaults.bool(forKey: self.lesson!.key) ? "не" : ""
+                let not = lesson?.status == 2 ? "не" : ""
                 let action = UIPreviewAction(title: "Отметить как \(not)выполненное", style: .default) { _,_ in
                     self.setDone()
                     self.diaryVC?.tableView.reloadData()
@@ -128,7 +128,7 @@ class Details: UIViewController, UITextViewDelegate {
     }
     
     private func setupUI() {
-//        bottomConstraint.setBottomConstraint
+        //        bottomConstraint.setBottomConstraint
         if #available(iOS 9.0, *), traitCollection.forceTouchCapability == .available {
             registerForPreviewing(with: self, sourceView: tableView)
         }
@@ -192,14 +192,14 @@ class Details: UIViewController, UITextViewDelegate {
         UIApplication.shared.keyWindow?.tintColor = UIColor(hex: "650794")
         switch detailType {
         case .diary:
-//            if lesson?.homework ?? false { createDoneBTN() }
+            //            if lesson?.homework ?? false { createDoneBTN() }
             self.files = [File(link: "", name: "Критерии.pdf", size: nil)]
             var attribute = self.createAttribute(color: self.lesson!.color)
-            let string = self.attributedString(string: "\n\(self.lesson!.fullWorkType)\n\n", attribute)
+            let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
             attribute = self.createAttribute()
             string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))
             attribute = self.createAttribute(fontSize: 24, bold: true)
-            string.append(self.attributedString(string: "\(self.lesson!.task)\n", attribute))
+            string.append(self.attributedString(string: "\(self.lesson!.title)\n", attribute))
             attribute = self.createAttribute(fontSize: 14)
             let taskDescription =
                 //            "Формулировка задания - с. 247, в. 8 \n\nОбразцы:\nроман Ж.-Ж. Руссо \"Юлия или Новая Элоиза\" (https://www.e-reading.club/book.php?book=1023373)\nроман И.-В. Гете \"Страдания молодого Вертера\" (https://www.e-reading.club/bookreader.php/14656/Gete_-_Stradaniya_yunogo_Vertera.html)\n\nОба романа написаны как серия писем. После задания напишите короткое объяснение приемов, образов и тем, которые вы использовали. Критерии оценивания см. в присоединенном файле\n\nРаботы пришлите мне на почту: galina1267@inbox.ru"
@@ -259,16 +259,16 @@ class Details: UIViewController, UITextViewDelegate {
         return NSMutableAttributedString(string: string, attributes: attribute )
     }
     
-//    private func createDoneBTN() {
-//        let done = UserDefaults.standard.bool(forKey: lesson!.key)
-//        navigationItem.rightBarButtonItem = createBarButtonItem(imageName: done ? "done_f" : "done_e", selector: #selector(makeDone))
-//    }
+    //    private func createDoneBTN() {
+    //        let done = UserDefaults.standard.bool(forKey: lesson!.key)
+    //        navigationItem.rightBarButtonItem = createBarButtonItem(imageName: done ? "done_f" : "done_e", selector: #selector(makeDone))
+    //    }
     
     private func setDone() {
-        let defaults = UserDefaults.standard
-        let key = self.lesson!.key
-        defaults.set(!defaults.bool(forKey: key), forKey: key)
-        defaults.synchronize()
+        //        let defaults = UserDefaults.standard
+        //        let key = self.lesson!.key
+        //        defaults.set(!defaults.bool(forKey: key), forKey: key)
+        //        defaults.synchronize()
     }
     
     @objc private func makeDone() {
@@ -276,7 +276,7 @@ class Details: UIViewController, UITextViewDelegate {
         if let diaryVC = diaryVC {
             diaryVC.tableView.reloadRows(at: [diaryVC.actionIndexPath], with: .none)
         }
-//        createDoneBTN()
+        //        createDoneBTN()
     }
     
     fileprivate func updateSize(s: Int64) {
@@ -367,10 +367,10 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2", for: indexPath) as! TaskTextCell
             cell.TaskTextView.attributedText = attrStr
             cell.TaskTextView.delegate = self
-            cell.separatorInset = UIEdgeInsets(top: 0, left: lesson?.homework ?? false ? 15 : cell.bounds.size.width, bottom: 0, right: 0)
+            cell.separatorInset = UIEdgeInsets(top: 0, left: lesson?.isHomework ?? false ? 15 : cell.bounds.size.width, bottom: 0, right: 0)
             return cell
         } else {
-            if lesson?.homework ?? false {
+            if lesson?.isHomework ?? false {
                 if indexPath.row == 1 {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell3" , for: indexPath)
                     cell.textLabel?.text = "Отметить как выполненное"
@@ -402,7 +402,7 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
             }
         }
         if indexPath.row == 0 { return }
-        if lesson?.homework ?? false {
+        if lesson?.isHomework ?? false {
             if indexPath.row == 1 {
                 tableView.deselectSelectedRow
                 makeDone()
@@ -418,7 +418,7 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
     }
     func numberOfSections(in tableView: UITableView) -> Int { return 1 }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if detailType == .diary && status == .successful && (lesson?.homework ?? false)  {
+        if detailType == .diary && status == .successful && (lesson?.isHomework ?? false)  {
             return files.count + 2
             
         }
@@ -450,7 +450,7 @@ extension Details: UIViewControllerPreviewingDelegate {
             guard let indexPath = tableView.indexPathForRow(at: location),
                 let cell = tableView.cellForRow(at: indexPath),
                 indexPath.row != 0 else { return nil }
-            let safariVC = CustomSafariViewController(url: files[indexPath.row - (lesson?.homework ?? false ? 2 : 1)].link.toURL)
+            let safariVC = CustomSafariViewController(url: files[indexPath.row - (lesson?.isHomework ?? false ? 2 : 1)].link.toURL)
             safariVC.delegate = self
             previewingContext.sourceRect = cell.frame
             return safariVC

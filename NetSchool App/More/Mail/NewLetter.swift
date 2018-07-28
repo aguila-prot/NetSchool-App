@@ -153,13 +153,13 @@ class NewLetter: UIViewController  {
     @objc private func send() {
         view.endEditing(true)
         // Это актуально только для версий с кодировкой Windows1251
-//        guard topic.isValid && message.isValid else {
-//            let message = "В Вашем письме содержатся символы, неподдерживаемые почтой NetSchool. \n__________________________________\nДопустимые символы:\nabcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLKMNOPQRSTUVWXYZ\n0123456789\nабвгдеёжзийклмнопрстуфхцчшщъыьэюя\nАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\n()<>[]{}#^*+=-_\\/|?!;:,.'\"~`№•@&%$€"
-//            let 🚨 = UIAlertController(title: "Письмо содержит недопустимые символы", message: message, preferredStyle: .alert)
-//            🚨.addOkAction
-//            present(🚨)
-//            return
-//        }
+        //        guard topic.isValid && message.isValid else {
+        //            let message = "В Вашем письме содержатся символы, неподдерживаемые почтой NetSchool. \n__________________________________\nДопустимые символы:\nabcdefghijklmnopqrstuvwxyz\nABCDEFGHIJKLKMNOPQRSTUVWXYZ\n0123456789\nабвгдеёжзийклмнопрстуфхцчшщъыьэюя\nАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ\n()<>[]{}#^*+=-_\\/|?!;:,.'\"~`№•@&%$€"
+        //            let 🚨 = UIAlertController(title: "Письмо содержит недопустимые символы", message: message, preferredStyle: .alert)
+        //            🚨.addOkAction
+        //            present(🚨)
+        //            return
+        //        }
         guard !topic.isEmpty else {
             let 🚨 = UIAlertController(title: "Отправить письмо без темы?", message: nil, preferredStyle: .actionSheet)
             🚨.addDefaultAction(title: "Отправить") {
@@ -771,7 +771,7 @@ class AdressBook: UIViewController, UISearchBarDelegate {
                     if (self.letterView?.adressBook[self.groups[indexPath].ID] ?? [:]).isEmpty {
                         self.tableView.tableHeaderView = nil
                         self.tableView.reloadData()
-//                      self.formUrl()
+                        //                      self.formUrl()
                     } else {
                         self.setupSearchBar()
                         self.updateSearchResults(for: self.searchController)
@@ -780,7 +780,7 @@ class AdressBook: UIViewController, UISearchBarDelegate {
                     if (self.letterView?.classAdressBook[indexPath] ?? [:]).isEmpty {
                         self.tableView.tableHeaderView = nil
                         self.tableView.reloadData()
-//                       self.formUrl()
+                        //                       self.formUrl()
                     } else {
                         self.setupSearchBar()
                         self.updateSearchResults(for: self.searchController)
@@ -829,24 +829,60 @@ class AdressBook: UIViewController, UISearchBarDelegate {
         tableView.reloadData()
     }
     
-    
     /**
      Loads users
      */
     private func loadAdressBook() {
         switch adressBookType {
         case .schoolList:
-            loginView?.adressBook = [
-                "Е": [School(name: "Европейская гимназия", link: "http://62.117.74.43/", letter: "ЕГ", ID: 1)],
-                "Н": [School(name: "Новая гуманитарная школа", link: "http://91.200.226.70/", letter: "НГ", ID: 2)],
-                "К": [School(name: "Школа \"26 Кадр\"", link: "http://keks.com", letter: "К", ID: 3)],
-                "О": [School(name: "СОШ «Образование Плюс»", link: "http://123.67.92.1", letter: "ОП", ID: 4)],
-                "1": [School(name: "Школа №1489", link: "http://school-1489.ru", letter: "Ш", ID: 5),School(name: "Школа №1329", link: "http://1329school.ru", letter: "Ш", ID: 6),School(name: "Школа №157", link: "http://157.43.54.23", letter: "Ш", ID: 7)]
-            ]
-            loginView?.letters = ["1", "Е", "Н", "К", "О"]
-            status = .successful
-            self.setupSearchBar()
-            self.updateSearchResults(for: self.searchController)
+            //            loginView?.adressBook = [
+            //                "Е": [School(name: "Европейская гимназия", link: "http://62.117.74.43/", letter: "ЕГ", ID: 1)],
+            //                "Н": [School(name: "Новая гуманитарная школа", link: "http://91.200.226.70/", letter: "НГ", ID: 2)],
+            //                "К": [School(name: "Школа \"26 Кадр\"", link: "http://keks.com", letter: "К", ID: 3)],
+            //                "О": [School(name: "СОШ «Образование Плюс»", link: "http://123.67.92.1", letter: "ОП", ID: 4)],
+            //                "1": [School(name: "Школа №1489", link: "http://school-1489.ru", letter: "Ш", ID: 5),School(name: "Школа №1329", link: "http://1329school.ru", letter: "Ш", ID: 6),School(name: "Школа №157", link: "http://157.43.54.23", letter: "Ш", ID: 7)]
+            //            ]
+            //            loginView?.letters = ["1", "Е", "Н", "К", "О"]
+            //            status = .successful
+            //            self.setupSearchBar()
+            //            self.updateSearchResults(for: self.searchController)
+            if loginView?.adressBook.isEmpty ?? false {
+                let url = NSURL(string: "http://77.73.26.195:8000/get_school_list")
+                URLSession.shared.dataTask(with: (url as URL?)!) {(data, response, error) -> Void in
+                    let decoder = JSONDecoder()
+                    if let data = data {
+                        if let json = try? decoder.decode(Schools.self, from: data) {
+                            let schools = json.schools.map{ School(name: $0.name, link: $0.website, letter: "ЕГ", ID: $0.id) }
+                            let firstSymbols = Set(schools.map{ $0.name[$0.name.startIndex] })
+                            var dict = [Character : [School]]()
+                            for symbol in firstSymbols {
+                                dict[symbol] = schools.filter{ symbol == $0.name[$0.name.startIndex] }
+                            }
+                            self.loginView?.letters = firstSymbols.sorted(by: {$0 < $1})
+                            self.loginView?.adressBook = dict
+                            DispatchQueue.main.async {
+                                self.status = .successful
+                                self.setupSearchBar()
+                                self.updateSearchResults(for: self.searchController)
+                            }
+                        } else {
+                            DispatchQueue.main.async {
+                                self.status = .error
+                                self.tableView.reloadData()
+                            }
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            self.status = .error
+                            self.tableView.reloadData()
+                        }
+                    }
+                    }.resume()
+            } else {
+                self.status = .successful
+                self.setupSearchBar()
+                self.updateSearchResults(for: self.searchController)
+            }
         case .defaultList:
             letterView?.adressBook["U"] = [
                 "К": [AdressBookPerson(name: "Корнакова Ольга Алексеевна", ID: 1),AdressBookPerson(name: "Корнаков Кирилл", ID: 2),AdressBookPerson(name: "Корнаков Максим", ID: 3),AdressBookPerson(name: "Корнаков Олег Анатольевич", ID: 4)],
@@ -1021,7 +1057,7 @@ extension AdressBook: UITableViewDelegate, UITableViewDataSource {
         switch adressBookType {
         case .defaultList, .classes:
             guard let person = filteredUsers[sortedLetters[indexPath.section]]?[indexPath.row],
-            let letterView = letterView else { return }
+                let letterView = letterView else { return }
             let mailReceiver = NewLetter.createReceiver(name: person.name, ID: person.ID)
             switch letterView.tag {
             case 0:

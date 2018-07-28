@@ -1,4 +1,4 @@
-import Foundation
+import JavaScriptCore
 
 // MARK: - Colors
 
@@ -9,7 +9,7 @@ func isSchemeLight() -> Bool {
 
 func darkSchemeColor(key: Int) -> UIColor {
     guard key < Settings.colorsHEXs.count else {
-//        setInt(forKey: "Color", val: 1)
+        //        setInt(forKey: "Color", val: 1)
         return UIColor.init(hex: Settings.colorsHEXs[1])
     }
     return UIColor.init(hex: Settings.colorsHEXs[key])
@@ -50,6 +50,17 @@ func darkSchemeColor() -> UIColor {
     return UIColor.init(hex: Settings.colorsHEXs[getColor()])
 }
 
+/// Returns hash of given text
+func hashMD5(_ text: String) -> String {
+    let context = JSContext()
+    let path = Bundle.main.path(forResource: "md5", ofType: "js")
+    let contentData = FileManager.default.contents(atPath: path!)
+    let content = NSString(data: contentData!, encoding: String.Encoding.utf8.rawValue) as String?
+    context?.setObject(text, forKeyedSubscript: "pass" as (NSCopying & NSObjectProtocol)?)
+    let result = context?.evaluateScript(content)
+    return result?.toString() ?? ""
+}
+
 func selectUsers(_ sender: AnyObject, _ viewController: UIViewController) {
     let 🚨 = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
     let selectedUser = getFirstUser()
@@ -69,6 +80,7 @@ func selectUsers(_ sender: AnyObject, _ viewController: UIViewController) {
     🚨.popoverPresentationController?.permittedArrowDirections = .up
     viewController.present(🚨)
 }
+
 
 func getColor() -> Int {
     let key = UserDefaults.standard.object(forKey: "Color") as? Int ?? 5
@@ -196,6 +208,12 @@ func setFirstUser(_ user: Int) {
     defaults.synchronize()
 }
 
+func setAny(forKey: String, val: Any) {
+    let defaults = UserDefaults.standard
+    defaults.set(val, forKey: forKey)
+    defaults.synchronize()
+}
+
 func setUsers(_ users:[User]) {
     var i = 0
     for user in users {
@@ -227,4 +245,8 @@ func getReloadForum() -> Bool {
 }
 func getReloadForumMessage() -> Bool {
     return UserDefaults.standard.object(forKey: "ReloadForumMessage") as? Bool ?? false
+}
+
+func getString(forKey: String) -> String {
+    return UserDefaults.standard.string(forKey: forKey) ?? ""
 }

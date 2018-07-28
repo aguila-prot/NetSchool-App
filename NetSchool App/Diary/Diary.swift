@@ -1,6 +1,25 @@
 import UIKit
 import JavaScriptCore
 
+struct LessonID {
+    let AID, CID, TP: Int
+}
+
+struct Lesson: Codable {
+    let AID, CID, TP, status: Int
+    let inTime: Bool
+    let name, mark, title, type: String
+}
+
+struct Day: Codable {
+    var date:String
+    let lessons: [Lesson]
+}
+
+struct Days: Codable {
+    let days: [Day]
+}
+
 class DiaryContentViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
@@ -13,10 +32,14 @@ class DiaryContentViewController: UIViewController {
     private var goToLogin = false
     var actionIndexPath = IndexPath(row: 0, section: 0)
     /// used to cancel URLSessionTask
-    private var task: URLSessionTask?    
+    private var task: URLSessionTask?
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.deselectSelectedRow
+        if !getString(forKey: "username").isEmpty && !getString(forKey: "password").isEmpty && haveLoadPermission && goToLogin {
+            goToLogin = false
+            loadData()
+        }
     }
     
     override func viewDidLoad() {
@@ -25,20 +48,19 @@ class DiaryContentViewController: UIViewController {
         if #available(iOS 9.0, *), traitCollection.forceTouchCapability == .available {
             registerForPreviewing(with: self, sourceView: tableView)
         }
-        
-        days.append(JournalDay(date: "15.03.2018, Чт"))
-        days[0].append(lesson: JournalLesson(data: ["Французский язык", "В", "Контроль навыков монологической речи - С (ii, iii, iv)", "-"], inTime: true, key: ""))
-        
-        days.append(JournalDay(date: "18.05.2018, Пт"))
-        days[1].append(lesson: JournalLesson(data: ["Литература", "Д", "Автобиография", "-"], inTime: false, key: ""))
-        days[1].append(lesson: JournalLesson(data: ["Алгебра", "А", "Огэ вариант 12", "5"], inTime: false, key: ""))
-        days[1].append(lesson: JournalLesson(data: ["Русский язык", "Ч", "Пишем диагностическое сочинение", "4"], inTime: false, key: "мсими"))
-        days.append(JournalDay(date: "20.03.2018, Вт"))
-        days[2].append(lesson: JournalLesson(data: ["История", "О", "Николай первый", "5"], inTime: false, key: ""))
-        days[2].append(lesson: JournalLesson(data: ["Французский язык", "Д", "Досмотреть фильм \"Крамер против Крамера\"", "-"], inTime: false, key: ""))
-        days[2].append(lesson: JournalLesson(data: ["Информатика", "Д", "Учить теорию, см файл.", "-"], inTime: false, key: "5п5"))
-        days.append(JournalDay(date: "21.03.2018, Ср"))
-        days[3].append(lesson: JournalLesson(data: ["География", "О", "Смотрите задание на прошлый урок", "-"], inTime: false, key: ""))
+        if getString(forKey: "username").isEmpty || getString(forKey: "password").isEmpty {
+            goToLogin = true
+            let loginVC = Login()
+            loginVC.navigationBarHeight = self.navigationController?.navigationBar.frame.height ?? 0
+            loginVC.modalTransitionStyle = .coverVertical
+            present(loginVC)
+        } else if haveLoadPermission {
+            impactFeedback()
+            loadData()
+        } else {
+            status = .canceled
+            tableView.reloadData()
+        }
     }
     
     private func setupTableView() {
@@ -46,11 +68,62 @@ class DiaryContentViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(loadData), for:  .valueChanged)
         tableView.addSubview(refreshControl)
         automaticallyAdjustsScrollViewInsets = false
-//        bottomConstraint.setBottomConstraint
+        //        bottomConstraint.setBottomConstraint
     }
     
     @objc private func loadData() {
+        let sessionName = UserDefaults.standard.value(forKey: "sessionName") as? String ?? ""
+        let cookie = UserDefaults.standard.value(forKey: sessionName) as? String ?? ""
+        guard !sessionName.isEmpty && !cookie.isEmpty else {
+            print("No Authorization")
+            return
+        }
+        let jsonData = try? JSONSerialization.data(withJSONObject: ["week": weekToLoad ?? "", "id": 11198])
+        var request = URLRequest(url: URL(string: "http://77.73.26.195:8000/get_tasks_and_marks")!)
+        request.httpMethod = "POST"
         
+        request.setValue(sessionName, forHTTPHeaderField: "sessionName")
+        request.setValue(cookie, forHTTPHeaderField: sessionName)
+        request.httpBody = jsonData
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil,
+                let data = data,
+                let httpResponse = response as? HTTPURLResponse else {
+                    DispatchQueue.main.async {
+                        self.status = .error
+                        self.tableView.reloadData()
+                    }
+                    return
+            }
+            switch httpResponse.statusCode {
+            case 200:
+                let decoder = JSONDecoder()
+                if let json = try? decoder.decode(Days.self, from: data) {
+                    print(json)
+                    self.days = json.days.map{ JournalDay(date: $0.date, lessons: $0.lessons.map{ JournalLesson($0) }) }
+                    self.status = .successful
+                    self.reloadTable()
+                } else if data.count == 13,
+                    let daysData = String(data: data, encoding: String.Encoding.utf8),
+                    daysData == "{\"days\":null}" {
+                    self.days.removeAll()
+                    self.status = .successful
+                    self.reloadTable()
+                } else {
+                    self.status = .error
+                    self.reloadTable()
+                }
+            case 400:
+                if let errorDescription = String(data: data, encoding: String.Encoding.utf8)  {
+                    print(errorDescription)
+                }
+                self.status = .error
+                self.reloadTable()
+            default:
+                self.status = .error
+                self.reloadTable()
+            }
+            }.resume()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -60,6 +133,13 @@ class DiaryContentViewController: UIViewController {
             destination.fullDate = days[indexPath.section].fullDate
             destination.detailType = .diary
             destination.diaryVC = self
+        }
+    }
+    
+    private func reloadTable() {
+        DispatchQueue.main.async {
+            self.refreshControl.stop
+            self.tableView.reloadData()
         }
     }
     
@@ -73,50 +153,44 @@ extension DiaryContentViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { return days.isEmpty ? 0 : days[section].count() }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! DiaryCell
+        
         let lesson = days[indexPath.section].getLesson(indexPath.row)
         let typeColor = lesson.color
         cell.StateIcon.isHidden = false
-        if lesson.inTime {
+        if !lesson.inTime {
             cell.StateIcon.image = UIImage(named: "warn")
             cell.StateIcon.setImageBackgroundColor(UIColor(red: 219/255, green: 45/255, blue: 69/255, alpha: 1))
             cell.SubjectLabelConstraint.constant = 33
         } else {
-            
-            // Это все будем переписывать так как будет облачная синхронизация
-//            let def = UserDefaults.standard
-            if lesson.key != "" { //def.value(forKey: lesson.key) == nil
+            switch lesson.status {
+            case 1:
+                // new
                 cell.SubjectLabelConstraint.constant = 33
                 cell.StateIcon.image = UIImage(named: "dot")
                 cell.StateIcon.setImageBackgroundColor(typeColor)
-            } else  { //if def.bool(forKey: lesson.key)
-                if lesson.homework && (indexPath.section == 1 || indexPath.row == 1) {
-                    cell.SubjectLabelConstraint.constant = 33
-                    cell.StateIcon.image = UIImage(named: "done")
-                    cell.StateIcon.setImageBackgroundColor(typeColor)
-                } else {
-                    cell.StateIcon.isHidden = true
-                    cell.SubjectLabelConstraint.constant = 11
-                }
-                
+            case 2:
+                // done
+                cell.SubjectLabelConstraint.constant = 33
+                cell.StateIcon.image = UIImage(named: "done")
+                cell.StateIcon.setImageBackgroundColor(typeColor)
+            default:
+                // viewed
+                cell.StateIcon.isHidden = true
+                cell.SubjectLabelConstraint.constant = 11
             }
-//            else {
-//                cell.StateIcon.isHidden = true
-//                cell.SubjectLabelConstraint.constant = 11
-//            }
         }
         cell.DateLabel.text = " \(days[indexPath.section].date) "
         cell.DateLabel.layer.cornerRadius = 3
         cell.DateLabel.layer.masksToBounds = true
         cell.setSelection
         cell.SubjectLabel.text = lesson.subject
-        cell.ExplainLabel.text = lesson.task
+        cell.ExplainLabel.text = lesson.title
         cell.MarkLabel.text = lesson.mark
         cell.typeLine.backgroundColor = typeColor
         cell.typeLine.layer.backgroundColor = typeColor.cgColor
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectSelectedRow
         performSegue(withIdentifier: "details")
     }
     
@@ -124,7 +198,7 @@ extension DiaryContentViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? { return section < days.count ? days[section].sectionDate : "" }
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let headerView: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-        headerView.textLabel?.textColor = UIColor(hex: "39393a") //.schemeTintColor
+        headerView.textLabel?.textColor = UIColor(hex: "39393a")
         headerView.textLabel?.font = UIFont.systemFont(ofSize: 15)
         let borderBottom = CALayer(), borderTop = CALayer()
         let width = CGFloat(0.5)
@@ -210,8 +284,8 @@ class JournalDay {
     private static let fullMonths = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"]
     private static let namesOfWeeks = ["Пн": "ПОНЕДЕЛЬНИК", "Вт": "ВТОРНИК", "Ср": "СРЕДА", "Чт": "ЧЕТВЕРГ", "Пт": "ПЯТНИЦА", "Сб": "СУББОТА", "Вс": "ВОСКРЕСЕНЬЕ"]
     
-    init(date: String) {
-        lessons = [JournalLesson]()
+    init(date: String, lessons: [JournalLesson]) {
+        self.lessons = lessons
         var components = date.components(separatedBy: ".")
         if components.count == 3 {
             if components[0][components[0].startIndex] == "0" { components[0].remove(at: components[0].startIndex) }
@@ -227,52 +301,57 @@ class JournalDay {
             fullDate = self.date
         }
     }
-    
-    func append(lesson: JournalLesson) { lessons.append(lesson) }
     func count() -> Int { return lessons.count }
     func getLesson(_ index: Int) -> JournalLesson { return lessons[index] }
 }
 
 // MARK: - JournalLesson
 class JournalLesson {
-    let subject, mark, task, workType, key, fullWorkType :String
-    let inTime, homework :Bool
     let color :UIColor
+    let status: Int
+    let lessonID: LessonID
+    let inTime, isHomework: Bool
+    let subject, mark, title, workType: String
     
-    init(data: [String], inTime: Bool, key: String) {
-        (subject, workType, task, mark, self.key, homework) = (data[0], data[1], data[2].capitalizeFirst, data[3] == "-" ? "" : data[3], key, data[1] == "Д")
-        switch data[1] {
-        case "Д": fullWorkType = "Домашняя работа"
+    init(_ lesson: Lesson) {
+        lessonID = LessonID(AID: lesson.AID, CID: lesson.CID, TP: lesson.TP)
+        status = lesson.status
+        inTime = lesson.inTime
+        subject = lesson.name
+        mark = lesson.mark == "-" ? "" : lesson.mark
+        title = lesson.title.capitalizeFirst
+        isHomework = lesson.type == "Д"
+        switch lesson.type {
+        case "Д": self.workType = "Домашняя работа"
         color = UIColor(red: 228/255, green: 117/255, blue: 62/255, alpha: 1)
-        case "О": fullWorkType = "Ответ на уроке"
+        case "О": self.workType = "Ответ на уроке"
         color = UIColor(red: 0, green: 170/255, blue: 150/255, alpha: 1)
-        case "В": fullWorkType = "Срезовая работа"
+        case "В": self.workType = "Срезовая работа"
         color = UIColor(red: 219/255, green: 45/255, blue: 69/255, alpha: 1)
-        case "Л": fullWorkType = "Лабораторная работа"
+        case "Л": self.workType = "Лабораторная работа"
         color = UIColor(red: 140/255, green: 97/255, blue: 166/255, alpha: 1)
-        case "Н": fullWorkType = "Диктант"
+        case "Н": self.workType = "Диктант"
         color = UIColor(red: 175/255, green: 192/255, blue: 108/255, alpha: 1)
-        case "З": fullWorkType = "Зачет"
+        case "З": self.workType = "Зачет"
         color = UIColor(red: 60/255, green: 91/255, blue: 114/255, alpha: 1)
-        case "П": fullWorkType = "Проект"
+        case "П": self.workType = "Проект"
         color = UIColor(red: 226/255, green: 174/255, blue: 12/255, alpha: 1)
-        case "Ч": fullWorkType = "Сочинение"
+        case "Ч": self.workType = "Сочинение"
         color = UIColor(red: 31/255, green: 175/255, blue: 208/255, alpha: 1)
-        case "Т": fullWorkType = "Тестирование"
+        case "Т": self.workType = "Тестирование"
         color = UIColor(red: 39/255, green: 72/255, blue: 69/255, alpha: 1)
-        case "К": fullWorkType = "Контрольная работа"
+        case "К": self.workType = "Контрольная работа"
         color = UIColor(red: 219/255, green: 45/255, blue: 69/255, alpha: 1)
-        case "И": fullWorkType = "Изложение"
+        case "И": self.workType = "Изложение"
         color = UIColor(red: 100/255, green: 34/255, blue: 40/255, alpha: 1)
-        case "С": fullWorkType = "Самостоятельная работа"
+        case "С": self.workType = "Самостоятельная работа"
         color = UIColor(red: 219/255, green: 45/255, blue: 69/255, alpha: 1)
-        case "Р": fullWorkType = "Реферат"
+        case "Р": self.workType = "Реферат"
         color = UIColor(red: 90/255, green: 90/255, blue: 90/255, alpha: 1)
-        case "А": fullWorkType = "Практическая работа"
+        case "А": self.workType = "Практическая работа"
         color = UIColor(red: 177/255, green: 179/255, blue: 215/255, alpha: 1)
-        default: fullWorkType = "Неизвестно"
+        default: self.workType = "Неизвестно"
         color = .black
         }
-        self.inTime = inTime
     }
 }
