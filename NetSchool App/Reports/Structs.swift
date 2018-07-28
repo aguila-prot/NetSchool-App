@@ -99,3 +99,17 @@ struct TableForInfoForParents: Codable{
 struct InfoForParents: Codable{
     let table: [TableForInfoForParents]
 }
+//////////////РАСПИСАНИЕ//////////////
+struct ScheduleLessonJSON: Codable{
+    let start: String
+    let end: String
+    let name: String
+    let classroom: String
+}
+struct ScheduleDayJSON: Codable{
+    let date: String
+    let lessons: [ScheduleLessonJSON]
+}
+struct ScheduleClass: Codable{
+    let days: [ScheduleDayJSON]
+}

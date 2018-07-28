@@ -7,6 +7,7 @@ class JSONParser {
     private var rowHeights: [CGFloat] = []
     private var columnWidth: [CGFloat] = [70]
     private var status: Int
+    private var sheduleDays: [ScheduleDay] = []
     
     init(data: String, type:Int) {
         self.status = 1
@@ -22,6 +23,7 @@ class JSONParser {
         case 6: parentsLetter()
         case 7: attendanceAndProgress()
         case 8: parentsLetter(1)
+        case 9: schedule_days()
         default: ()
         }
     }
@@ -48,6 +50,32 @@ class JSONParser {
             label.sizeToFit()
             rowHeights.append(max(label.frame.height + 10, 45))
         }
+    }
+    private func schedule_days(){
+        guard let json = try? decoder.decode(ScheduleClass.self, from: inputData) else {
+            JSON_Error()
+            return
+        }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        dateFormatter.timeZone = NSTimeZone(name: "UTC") as TimeZone?
+        for i in json.days{
+            _ = dateFormatter.date(from: i.date)
+            var temp_lesson: [ScheduleLesson] = []
+            for j in i.lessons{
+                if j.classroom != ""{
+                    temp_lesson.append(ScheduleLesson(lessonTime: j.start + "-" + j.end
+                        , subject:"Урок: " + j.name + " [" +  j.classroom + "]"))
+                }else{
+                    temp_lesson.append(ScheduleLesson(lessonTime: j.start + "-" + j.end
+                        , subject: j.name))
+                }
+            }
+            sheduleDays.append(ScheduleDay(lessons: temp_lesson))
+        }
+    }
+    func getParsedScheduleDays() -> [ScheduleDay]{
+        return sheduleDays
     }
     
     private func marks() {

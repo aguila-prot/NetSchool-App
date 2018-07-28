@@ -8,28 +8,133 @@ class Schedule: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        var data = [
-            ScheduleLesson(lessonTime: "8:30 - 9:15", subject: "Урок: Английский язык [каб. англ.яз.-1]"),
-            ScheduleLesson(lessonTime: "9:30 - 10:15", subject: "Урок: Английский язык [каб. англ.яз.-1]"),
-            ScheduleLesson(lessonTime: "10:30 - 11:15", subject: "Урок: Музыка [каб. музыки]"),
-            ScheduleLesson(lessonTime: "11:25 - 12:10", subject: "Урок: Геометрия [каб. химии]"),
-            ScheduleLesson(lessonTime: "12:20 - 13:05", subject: "Урок: Физика [каб. физ.]"),
-            ScheduleLesson(lessonTime: "13:15 - 14:00", subject: "Урок: Физика [каб. физ.]"),
-            ScheduleLesson(lessonTime: "14:50 - 15:35", subject: "Урок: История [каб. истор.]"),
-            ScheduleLesson(lessonTime: "15:45 - 16:30", subject: "Урок: Информатика и ИКТ [комп. кл.]")
-        ]
-        self.sheduleDays.append(ScheduleDay(lessons: data))
-        self.sheduleDays.append(ScheduleDay(lessons: [ScheduleLesson(lessonTime: "00:00 - 23:59", subject: "Праздник: Всемирный день рок-н-ролла")]))
-        self.sheduleDays.append(ScheduleDay(lessons: [ScheduleLesson(lessonTime: "00:00 - 23:59", subject: "Выходной день")]))
-        self.sheduleDays.append(ScheduleDay(lessons: [ScheduleLesson(lessonTime: "00:00 - 23:59", subject: "Выходной день")]))
-        data = [
-            ScheduleLesson(lessonTime: "8:30 - 9:15", subject: "Урок: Алгебра [каб. матем.-1]"),
-            ScheduleLesson(lessonTime: "9:30 - 10:15", subject: "Урок: Алгебра [каб. матем.-1]"),
-            ScheduleLesson(lessonTime: "10:30 - 11:15", subject: "Урок: Испанский язык [каб. англ.яз.-3]"),
-            ScheduleLesson(lessonTime: "11:25 - 12:10", subject: "Урок: Английский язык [каб. англ.яз.-1]"),
-            ScheduleLesson(lessonTime: "12:20 - 13:05", subject: "Урок: Информатика и ИКТ [комп. кл.]")
-        ]
-        self.sheduleDays.append(ScheduleDay(lessons: data))
+        let json_data = """
+        {
+            "days": [
+                {
+                    "date": "29.07.2018",
+                    "lessons": [
+                        {
+                            "start": "8.30",
+                            "end": "9.15",
+                            "name": "Английский язык",
+                            "classroom": "каб. английского языка"
+                        },
+                        {
+                            "start": "9.30",
+                            "end": "10.15",
+                            "name": "Информатика и ИКТ",
+                            "classroom": "компьютерный класс"
+                        }
+                    ]
+                },
+                {
+                    "date": "30.07.2018",
+                    "lessons": [
+                        {
+                            "start": "8.30",
+                            "end": "9.15",
+                            "name": "Физика",
+                            "classroom": "каб. физики"
+                        },
+                        {
+                            "start": "9.30",
+                            "end": "10.15",
+                            "name": "История",
+                            "classroom": "каб. истории"
+                        }
+                    ]
+                },
+                {
+                    "date": "31.07.2018",
+                    "lessons": [
+                        {
+                            "start": "8.30",
+                            "end": "9.15",
+                            "name": "Геометрия",
+                            "classroom": "каб. математики"
+                        },
+                        {
+                            "start": "9.30",
+                            "end": "10.15",
+                            "name": "Физическая культура",
+                            "classroom": "спортзал №1"
+                        }
+                    ]
+                },
+                {
+                    "date": "29.07.2018",
+                    "lessons": [
+                        {
+                            "start": "8.30",
+                            "end": "9.15",
+                            "name": "Английский язык",
+                            "classroom": "каб. английского языка"
+                        },
+                        {
+                            "start": "9.30",
+                            "end": "10.15",
+                            "name": "Информатика и ИКТ",
+                            "classroom": "компьютерный класс"
+                        }
+                    ]
+                },
+                {
+                    "date": "30.07.2018",
+                    "lessons": [
+                        {
+                            "start": "8.30",
+                            "end": "9.15",
+                            "name": "Физика",
+                            "classroom": "каб. физики"
+                        },
+                        {
+                            "start": "9.30",
+                            "end": "10.15",
+                            "name": "История",
+                            "classroom": "каб. истории"
+                        }
+                    ]
+                },
+                {
+                    "date": "31.07.2018",
+                    "lessons": [
+                        {
+                            "start": "8.30",
+                            "end": "9.15",
+                            "name": "Геометрия",
+                            "classroom": "каб. математики"
+                        },
+                        {
+                            "start": "9.30",
+                            "end": "10.15",
+                            "name": "Физическая культура",
+                            "classroom": "спортзал №1"
+                        }
+                    ]
+                },
+                {
+                    "date": "31.07.2018",
+                    "lessons": [
+                        {
+                            "start": "00:00",
+                            "end": "23:59",
+                            "name": "Праздник: Всемирный день рок-н-ролла",
+                            "classroom": ""
+                        },
+                        {
+                            "start": "00:00",
+                            "end": "23:59",
+                            "name": "Выходной день",
+                            "classroom": ""
+                        }
+                    ]
+                }
+            ]
+        }
+        """
+        let json = JSONParser(data:json_data, type: 9)
+        self.sheduleDays = json.getParsedScheduleDays()
     }
     
     @objc private func showUsers(sender: AnyObject) {
@@ -159,7 +264,7 @@ class SheduleCell: UITableViewCell {
 }
 
 // MARK: - Schedule Day
-fileprivate class ScheduleDay {
+class ScheduleDay {
     private let lessons: [ScheduleLesson]
     init(lessons: [ScheduleLesson]) {
         self.lessons = lessons
@@ -178,7 +283,7 @@ fileprivate class ScheduleDay {
 }
 
 //MARK: - Schedule Lesson
-fileprivate class ScheduleLesson {
+class ScheduleLesson {
     let subject, audience, startHour, endHour, startMinute, endMinute: String
     let minor: Bool
     
