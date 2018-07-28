@@ -113,3 +113,16 @@ struct ScheduleDayJSON: Codable{
 struct ScheduleClass: Codable{
     let days: [ScheduleDayJSON]
 }
+//////////////ОБЪЯВЛЕНИЯ//////////////
+struct PostJSON: Codable{
+    let id: String
+    let unread: String
+    let author: String
+    let title: String
+    let date: String
+    let message: String
+    let file: String
+}
+struct PostsClass: Codable{
+    let posts: [PostJSON]
+}

@@ -8,6 +8,7 @@ class JSONParser {
     private var columnWidth: [CGFloat] = [70]
     private var status: Int
     private var sheduleDays: [ScheduleDay] = []
+    private var post_data: [Post] = []
     
     init(data: String, type:Int) {
         self.status = 1
@@ -24,6 +25,7 @@ class JSONParser {
         case 7: attendanceAndProgress()
         case 8: parentsLetter(1)
         case 9: schedule_days()
+        case 10: post_json()
         default: ()
         }
     }
@@ -50,6 +52,18 @@ class JSONParser {
             label.sizeToFit()
             rowHeights.append(max(label.frame.height + 10, 45))
         }
+    }
+    private func post_json(){
+        guard let json = try? decoder.decode(PostsClass.self, from: inputData) else {
+            JSON_Error()
+            return
+        }
+        for i in json.posts{
+            post_data.append(Post(date: i.date, author: i.author, title: i.title, message: i.message, file: File(link: i.file, name: i.file, size: "")))
+        }
+    }
+    func get_post_data() -> [Post]{
+        return post_data
     }
     private func schedule_days(){
         guard let json = try? decoder.decode(ScheduleClass.self, from: inputData) else {

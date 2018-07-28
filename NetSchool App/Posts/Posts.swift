@@ -5,17 +5,18 @@ struct File {
     var link, name: String
     var size: String?
 }
+struct Post {
+    let date, author, title, message: String
+    let file: File?
+    var hasFile: Bool {
+        return file != nil
+    }
+}
 
 class Posts: UIViewController {
     
     /// Struct represents a post
-    fileprivate struct Post {
-        let date, author, title, message: String
-        let file: File?
-        var hasFile: Bool {
-            return file != nil
-        }
-    }
+    
     
     @IBOutlet weak var tableView: UITableView!
     fileprivate var posts = [Post]()
@@ -51,11 +52,42 @@ class Posts: UIViewController {
     @objc private func loadData() {
         status = .loading
         if posts.isEmpty { tableView.reloadData() }
-        posts = [
-            Post(date: "8.05.2018", author: "Павлова Ольга Вячеславовна", title: "NEW!!! ГРАФИК ЖИЗНИ ШКОЛЫ 2018-2019 гг.", message: "", file: File(link: "", name: "ГРАФИК_ЖИЗНИ_ШКОЛЫ_2018-2019.doc", size: "")),
-            Post(date: "31.01.2018", author: "Хмельницкий Андрей Леонидович", title: "ЧЁРНЫЙ годовой календарный график 2017-2018 у.г", message: "", file: File(link: "", name: "ЧЁРНЫЙ годовой календарный график 2017-2018 у.г.xls", size: "")),
-            Post(date: "14.06.2015", author: "Плескач Сергей Георгиевич", title: "По следам семинаров для родителей. Ссылки на видео", message: "Амонашвили Ш.А. с первого семинара с родителями:\nhttp://youtu.be/_L1hEDq90Xs\n\nГатанов Ю.Б. с первого семинара с родителями::\nhttp://youtu.be/PaJz5TEng58\n\nВыступление А.Э.Колмановского, которое мы просмотрели на втором семинаре с родителями 28.01.15:\nhttp://youtu.be/sucoP9PWk8U ", file: File(link: "", name: "Ссылки_на_видеозаписи,_которые_мы_просмотрели_на_семинарах_с_родителями.docx", size: ""))
-        ]
+        let data: String = """
+            {
+                "posts": [
+                    {
+                        "id": "1",
+                        "unread": "True",
+                        "author": "Павлова Ольга Вячеславовна",
+                        "title": "NEW!!! ГРАФИК ЖИЗНИ ШКОЛЫ 2018-2019 гг.",
+                        "date": "8.05.2018",
+                        "message": "",
+                        "file": "ГРАФИК_ЖИЗНИ_ШКОЛЫ_2018-2019.doc"
+                    },
+                    {
+                        "id": "2",
+                        "unread": "False",
+                        "author": "Хмельницкий Андрей Леонидович",
+                        "title": "ЧЁРНЫЙ годовой календарный график 2017-2018 у.г",
+                        "date": "8.05.2018",
+                        "message": "",
+                        "file": "ЧЁРНЫЙ годовой календарный график 2017-2018 у.г.xls"
+                    },
+                    {
+                        "id": "3",
+                        "unread": "True",
+                        "author": "Плескач Сергей Георгиевич",
+                        "title": "По следам семинаров для родителей. Ссылки на видео",
+                        "date": "14.06.2015",
+                        "message": "Амонашвили Ш.А. с первого семинара с родителями: \\n http://youtu.be/_L1hEDq90Xs Гатанов Ю.Б. с первого семинара с родителями::\\n http://youtu.be/PaJz5TEng58 Выступление А.Э.Колмановского, которое мы просмотрели на втором семинаре с родителями 28.01.15:\\nhttp://youtu.be/sucoP9PWk8U ",
+                        "file": "Ссылки_на_видеозаписи,_которые_мы_просмотрели_на_семинарах_с_родителями.docx"
+                    }
+                ]
+            }
+
+        """
+        let json = JSONParser(data:data, type: 10)
+        self.posts = json.get_post_data()
     }
     
     fileprivate func createAttributeString(_ indexPath: IndexPath) -> NSMutableAttributedString {
