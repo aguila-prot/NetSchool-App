@@ -90,16 +90,12 @@ struct JournalLine: Codable{
     let type: String
 }
 //////////////ИНФОРМАЦИОННОЕ ПИСЬМО ДЛЯ РОДИТЕЛЕЙ//////////////
-struct MarkInfo: Codable{
-    let mark: String
-    let count: String
-}
 struct TableForInfoForParents: Codable{
-    let lesson: String
-    let mark_info: [MarkInfo]
-    let middle: String
-    let final: String
+    let name: String
+    let marks: [String]
+    let average_mark: String
+    let mark_for_period: String
 }
 struct InfoForParents: Codable{
-    let data: [TableForInfoForParents]
+    let table: [TableForInfoForParents]
 }

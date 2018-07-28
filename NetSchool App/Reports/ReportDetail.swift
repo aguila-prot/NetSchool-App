@@ -251,50 +251,34 @@ class ReportDetails: UIViewController {
         case .parentLetter:
             let data = """
             {
-            "data" : [
+                "table": [
             {
-            "lesson" : "Russian",
-            "mark_info" : [
-            {
-            "mark" : "8",
-            "count" : "4"
+            "name": "Испанский язык",
+            "marks": ["1", "2", "3", "4", "5", "6", "7", "8"],
+            "average_mark": "54",
+            "mark_for_period": "23"
             },
             {
-            "mark" : "7",
-            "count" : "6"
+            "name": "Физическая культура",
+            "marks": ["8", "7", "6", "5", "4", "3", "2", "1"],
+            "average_mark": "21",
+            "mark_for_period": "93"
             },
             {
-            "mark" : "6",
-            "count" : "3"
-            },
-            {
-            "mark" : "5",
-            "count" : "8"
-            },
-            {
-            "mark" : "4",
-            "count" : "3"
-            },
-            {
-            "mark" : "3",
-            "count" : "5"
-            },
-            {
-            "mark" : "2",
-            "count" : "0"
-            },
-            {
-            "mark" : "1",
-            "count" : "1"
-            }
-            ],
-            "middle" : "7",
-            "final" : "5"
+            "name": "Английский язык",
+            "marks": ["8", "7", "6", "5", "4", "3", "2", "1"],
+            "average_mark": "85",
+            "mark_for_period": "32"
             }
             ]
+
             }
             """
-            openTableFromJSON(data, type: 6)
+            if selectedIndex[0] == 0{
+                openTableFromJSON(data, type: 6)
+            }else{
+                openTableFromJSON(data, type: 8)
+            }
         default:
             ()
         }
