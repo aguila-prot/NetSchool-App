@@ -153,7 +153,7 @@ class JSONParser {
         result.append(["Предмет"])
         columnWidth.removeAll()
         columnWidth.append(85)
-        let count_of_marks: Int = json!.table[0].marks.count
+        let count_of_marks: Int = json.table[0].marks.count
         for i in stride(from: count_of_marks, through: 1, by: -1) {
             result[0].append(String(i))
             count.append(0)
@@ -161,7 +161,7 @@ class JSONParser {
         }
         result[0].append("Ср. балл")
         columnWidth.append(70)
-        for i in (json?.table)!{
+        for i in (json.table){
             var temp: [String] = []
             temp.append(i.name)
             for j in i.marks{
