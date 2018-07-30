@@ -5,8 +5,9 @@ class Forum: UIViewController {
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
     /// Strunc represents forum topic
-    fileprivate struct ForumTopic {
+    struct ForumTopic {
         let topic, topicID, messagesCount, date, author: String
+        let unread: Bool
     }
     /// Current page index (Starts from 1)
     fileprivate var currentPage = 1
@@ -85,11 +86,32 @@ class Forum: UIViewController {
     
     /// Loads next topics group
     fileprivate func loadTopics(isLoadFirst: Bool = true) {
-        topics = [
-            ForumTopic(topic: "Minecraft", topicID: "", messagesCount: "156", date: cleverDate("21.06.2018"), author: "Соболева Варвара"),
-            ForumTopic(topic: "English exam", topicID: "", messagesCount: "14", date: cleverDate("4.05.2018"), author: "Хилл Е.В."),
-            ForumTopic(topic: "Топ телефонов", topicID: "", messagesCount: "7", date: cleverDate("24.06.2018"), author: "Смирнов Максим")
-        ]
+        let data = """
+        {
+            "posts": [
+                {
+                    "date": "12.07.2018",
+                    "last_author": "Кирилл Кек",
+                    "id": "1",
+                    "creator": "Артур",
+                    "answers": "2",
+                    "title": "WTF",
+                    "unread": "false"
+                },
+                {
+                    "date": "12.09.2018",
+                    "last_author": "Кирилл НеКек",
+                    "id": "2",
+                    "creator": "Путин",
+                    "answers": "3",
+                    "title": "Газета",
+                    "unread": "true"
+                }
+            ]
+        }
+"""
+        let json = JSONParser(data:data, type: 12)
+        topics = json.get_topics()
         status = .successful
         tableView.reloadData()
     }

@@ -10,6 +10,8 @@ class JSONParser {
     private var sheduleDays: [ScheduleDay] = []
     private var post_data: [Post] = []
     private var group_data: [Group] = []
+    private var forum_list: [Forum.ForumTopic] = []
+    private var forum_detail: [ForumDetailTopic] = []
     
     init(data: String, type:Int) {
         self.status = 1
@@ -28,6 +30,8 @@ class JSONParser {
         case 9: schedule_days()
         case 10: post_json()
         case 11: school_resource()
+        case 12: forum_handle_list()
+        case 13: forum_detail_topic()
         default: ()
         }
     }
@@ -51,6 +55,30 @@ class JSONParser {
             label.sizeToFit()
             rowHeights.append(max(label.frame.height + 10, 45))
         }
+    }
+    private func forum_detail_topic(){
+        guard let json = try? decoder.decode(ForumInfoOfPostClass.self, from: inputData) else {
+            JSON_Error()
+            return
+        }
+        for i in json.messages{
+            forum_detail.append(ForumDetailTopic(date: i.date, message: i.message, author: i.author, systemID: i.role, unread: i.unread == "true" ? true: false))
+        }
+    }
+    func get_forum_detail_topic() -> [ForumDetailTopic]{
+        return forum_detail
+    }
+    private func forum_handle_list(){
+        guard let json = try? decoder.decode(ForumPostsListClass.self, from: inputData) else {
+            JSON_Error()
+            return
+        }
+        for i in json.posts{
+            forum_list.append(Forum.ForumTopic(topic: i.title, topicID: i.id, messagesCount: i.answers, date: cleverDate(i.date), author: i.creator, unread: i.unread == "true" ? true : false))
+        }
+    }
+    func get_topics() -> [Forum.ForumTopic]{
+        return forum_list
     }
     private func post_json(){
         guard let json = try? decoder.decode(PostsClass.self, from: inputData) else {

@@ -85,15 +85,29 @@ class ForumDetail: UIViewController {
     
     /// Loads new messages group
     func getMessages(_ firstLoad: Bool) {
-        topics = [
-            ForumDetailTopic(date: "24.06.2018", message: "Типичный пользователь Apple", author: "Смирнов Максим", systemID: ""),
-            ForumDetailTopic(date: "21.06.2018", message: "Лололо", author: "Кудрявцев Даниил", systemID: ""),
-            ForumDetailTopic(date: "21.06.2018", message: "А я футблист и долблюсь в жопу", author: "Кудрявцев Даниил", systemID: ""),
-            ForumDetailTopic(date: "19.06.2018", message: "Фигня твой Xiaomi. У них дисплей максимум HD. Бомжефон.", author: "Смирнов Максим", systemID: ""),
-            ForumDetailTopic(date: "18.06.2018", message: "Сяоми love forever", author: "Соболева Варвара", systemID: ""),
-            ForumDetailTopic(date: "08.02.2018", message: "Самые лучше телефоны - от Samsung!1!!11!! Apple сосатб!!11!", author: "Смирнов Максим", systemID: ""),
-            ForumDetailTopic(date: "08.02.2018", message: "Пишите кто какие устройства любит", author: "Смирнов Максим", systemID: "")
-        ]
+        
+        let data = """
+        {
+            "messages": [
+                {
+                    "date": "12.07.2018",
+                    "author": "Максим Смирнов",
+                    "role": "ученик",
+                    "message": "Типичный пользователь Apple",
+                    "unread": "false"
+                },
+                {
+                    "date": "12.08.2018",
+                    "author": "Кудрявцев Даниилв",
+                    "role": "ученик",
+                    "message": "Сяоми love forever",
+                    "unread": "true"
+                }
+            ]
+        }
+"""
+        let json = JSONParser(data:data, type: 13)
+        topics = json.get_forum_detail_topic()
         self.status = .successful
         self.tableView.reloadData()
     }
@@ -219,8 +233,9 @@ class ForumDetailCell: UITableViewCell {
 class ForumDetailTopic {
     let date, message, author, fullID: String
     let systemID: Int
-    init(date: String, message: String, author: String, systemID: String) {
-        (self.date, self.message, self.author, self.fullID) = (date.removePart("Добавлено: "), message, author, systemID)
+    let unread: Bool
+    init(date: String, message: String, author: String, systemID: String, unread: Bool) {
+        (self.date, self.message, self.author, self.fullID, self.unread) = (date.removePart("Добавлено: "), message, author, systemID, unread)
         switch fullID {
         case "Ученик": self.systemID = 0
         case "Родитель": self.systemID = 1
