@@ -9,6 +9,7 @@ class JSONParser {
     private var status: Int
     private var sheduleDays: [ScheduleDay] = []
     private var post_data: [Post] = []
+    private var group_data: [Group] = []
     
     init(data: String, type:Int) {
         self.status = 1
@@ -26,14 +27,13 @@ class JSONParser {
         case 8: parentsLetter(1)
         case 9: schedule_days()
         case 10: post_json()
+        case 11: school_resource()
         default: ()
         }
     }
-    
     private func JSON_Error(){
         self.status = 1
     }
-    
     private func updateMaxWidth(topic: String) {
         let components = topic.components(separatedBy: " ")
         for component in components {
@@ -41,7 +41,6 @@ class JSONParser {
             columnWidth[0] = max(columnWidth[0], length)
         }
     }
-    
     private func updateRowHeights(index: Int = 0, width: CGFloat) {
         rowHeights.removeAll()
         for row in result {
@@ -91,7 +90,6 @@ class JSONParser {
     func getParsedScheduleDays() -> [ScheduleDay]{
         return sheduleDays
     }
-    
     private func marks() {
         guard let json = try? decoder.decode(Marks.self, from: inputData) else {
             JSON_Error()
@@ -105,7 +103,6 @@ class JSONParser {
         updateRowHeights(width: columnWidth[0])
         columnWidth = [columnWidth[0]+10, 70, 70, 70, 70, 75, 75, 75]
     }
-    
     private func middleMarks() {
         guard let json = try? decoder.decode(MiddleMarks.self, from: inputData) else {
             JSON_Error()
@@ -119,7 +116,6 @@ class JSONParser {
         updateRowHeights(width: columnWidth[0])
         columnWidth = [columnWidth[0]+10, 130, 130]
     }
-    
     private func dynamicMiddleMarksT() {
         guard let json = try? decoder.decode(DynamicMiddleMarksT.self, from: inputData) else {
             JSON_Error()
@@ -130,7 +126,6 @@ class JSONParser {
             result.append([i.period, i.mark_of_student, i.mark_of_class])
         }
     }
-    
     private func dynamicMiddleMarksSB() {
         guard let json = try? decoder.decode(DynamicMiddleMarksSB.self, from: inputData) else {
             JSON_Error()
@@ -143,7 +138,6 @@ class JSONParser {
         updateRowHeights(width: columnWidth[0])
         columnWidth = [70, 70, 70, 70, 70]
     }
-    
     private func progress() {
         guard let json = try? decoder.decode(Work.self, from: inputData) else {
             JSON_Error()
@@ -157,6 +151,38 @@ class JSONParser {
         }
         updateRowHeights(index: 1, width: 200)
         columnWidth = [columnWidth[0]+10, 200, 100, 45]
+    }
+    private func school_resource(){
+        guard let json = try? decoder.decode(SchoolResourcesClass.self, from: inputData) else {
+            JSON_Error()
+            return
+        }
+        for i in json.groups{
+            group_data.append(Group(i.group_title, i.group_title))
+            if i.subgroups.last?.subgroup_title == "None"{
+                for j in i.files{
+                    if j.name != "None"{
+                        group_data.last?.addFile(file: File(link: j.link, name: j.name, size: ""))
+                    }
+                }
+            }else{
+                for j in i.subgroups{
+                    group_data.last?.sub_group.append(Group(j.subgroup_title, j.subgroup_title))
+                    for k in j.files{
+                        group_data.last?.sub_group.last?.addFile(file: File(link: k.link, name: k.name, size: ""))
+                    }
+                }
+                if i.files[0].name != "None"{
+                    group_data.last?.sub_group.append(Group("Остальное", "Остальное"))
+                    for j in i.files{
+                        group_data.last?.sub_group.last?.addFile(file: File(link: j.link, name: j.name, size: ""))
+                    }
+                }
+            }
+        }
+    }
+    func get_school_resources() -> [Group]{
+        return group_data
     }
     
     private func classJournal() {
@@ -183,7 +209,6 @@ class JSONParser {
         }
         columnWidth = [columnWidth[0]+10, 51, 125, teacherWidth, 170, 85, 75]
     }
-    
     private func parentsLetter(_ type: Int = 0) {
         guard let json = try? decoder.decode(InfoForParents.self, from: inputData) else {
             JSON_Error()
@@ -239,7 +264,6 @@ class JSONParser {
         result.append(temp)
         updateRowHeights(width: columnWidth[0])
     }
-    
     private func attendanceAndProgress() {
         guard let json = try? decoder.decode(BigJournal.self, from: inputData) else {
             JSON_Error()
@@ -305,7 +329,6 @@ class JSONParser {
         columnWidth[0] = maxSubjectWidth
         updateRowHeights(width: columnWidth[0])
     }
-    
     func parsedData() -> (data:[[String]], rowHeights: [CGFloat], columnWidth: [CGFloat]) {
         return (result, rowHeights, columnWidth)
     }
