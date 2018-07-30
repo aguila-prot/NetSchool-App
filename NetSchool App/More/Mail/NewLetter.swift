@@ -852,7 +852,7 @@ class AdressBook: UIViewController, UISearchBarDelegate {
                     let decoder = JSONDecoder()
                     if let data = data {
                         if let json = try? decoder.decode(Schools.self, from: data) {
-                            let schools = json.schools.map{ School(name: $0.name, link: $0.website, letter: "ЕГ", ID: $0.id) }
+                            let schools = json.schools.map{ School(name: $0.name, website: $0.website, shortcut: $0.shortcut, id: $0.id) }
                             let firstSymbols = Set(schools.map{ $0.name[$0.name.startIndex] })
                             var dict = [Character : [School]]()
                             for symbol in firstSymbols {
@@ -1019,7 +1019,7 @@ extension AdressBook: UITableViewDelegate, UITableViewDataSource {
         case .schoolList:
             let imageView = UIImageView(frame: CGRect(x: 8, y: 0, width: 45, height: 45 ))
             let person = filteredSchools[sortedLetters[indexPath.section]]?[indexPath.row]
-            imageView.setImage(string: person!.name, person!.letter)
+            imageView.setImage(string: person!.name, person!.shortcut)
             imageView.translatesAutoresizingMaskIntoConstraints = false
             cell.addSubview(imageView)
             let label = UILabel()
@@ -1029,7 +1029,7 @@ extension AdressBook: UITableViewDelegate, UITableViewDataSource {
             label.textColor = UIColor(red: 54/255, green: 54/255, blue: 54/255, alpha: 1)
             cell.addSubview(label)
             let detailLabel = UILabel()
-            detailLabel.text = person!.link
+            detailLabel.text = person!.website
             detailLabel.font = UIFont(name: "HelveticaNeue", size: 14) ?? UIFont.systemFont(ofSize: 14)
             detailLabel.textColor = UIColor.gray.withAlphaComponent(0.7)
             detailLabel.translatesAutoresizingMaskIntoConstraints = false

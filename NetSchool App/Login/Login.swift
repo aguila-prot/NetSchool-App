@@ -1,16 +1,11 @@
 import Foundation
 
-struct School {
-    var name, link, letter : String
-    var ID : Int
-}
-struct SchoolObject: Codable {
-    let id: Int
-    let name: String
-    let website: String
+struct School: Codable {
+    var name, website, shortcut : String
+    var id : Int
 }
 struct Schools: Codable {
-    let schools: [SchoolObject]
+    let schools: [School]
 }
 
 fileprivate class CustomTextField : UITextField {
@@ -35,7 +30,7 @@ class Login: UIViewController, UITextFieldDelegate {
     fileprivate var username = ""
     /// New password
     fileprivate var password = ""
-    ///Selected school
+    /// Selected school
     var school: School?
     /// Error text
     fileprivate var footerText = ""
@@ -43,8 +38,6 @@ class Login: UIViewController, UITextFieldDelegate {
     fileprivate let enterItem = UIBarButtonItem(title: "Войти", style: .done , target: self, action: Selector(("enterAction")))
     /// used to cancel URLSessionTask
     private var task: URLSessionTask?
-    
-    
     
     var activityIndicator = UIActivityIndicatorView()
     var strLabel = UILabel()
@@ -182,13 +175,13 @@ class Login: UIViewController, UITextFieldDelegate {
     
     @objc func enterAction() {
         let hashedPassword = hashMD5(password)
-        let jsonData = try? JSONSerialization.data(withJSONObject: ["login": username, "passkey": hashedPassword, "id": school?.ID ?? -5])
+        let jsonData = try? JSONSerialization.data(withJSONObject: ["login": username, "passkey": hashedPassword, "id": school?.id ?? -5])
         var request = URLRequest(url: URL(string: "http://77.73.26.195:8000/sign_in")!)
         request.httpMethod = "POST"
         request.httpBody = jsonData
         let date = Date()
         activityIndicator("Авторизация")
-        URLSession.shared.dataTask(with: request) { _, response, error in
+        URLSession.shared.dataTask(with: request) { data, response, error in
             guard error == nil,
                 let httpResponse = response as? HTTPURLResponse,
                 let fields = httpResponse.allHeaderFields as? [String : String] else {
@@ -199,9 +192,12 @@ class Login: UIViewController, UITextFieldDelegate {
                     }
                 return
             }
+            print(httpResponse)
+            print(String.init(data: data!, encoding: .utf8))
             let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields, for: response!.url!)
             guard cookies.count == 2 else {
                 print("No cookie")
+                print(cookies)
                 DispatchQueue.main.async {
                     self.stopActivityIndicatior()
                     self.setError("Неверные данные")

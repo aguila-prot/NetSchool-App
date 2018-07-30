@@ -80,17 +80,23 @@ class DiaryViewController: UIViewController {
         let calendar = Calendar.current as NSCalendar
         weekDateTime = weekDateTime.addingTimeInterval(time)
         let components = calendar.components([.day , .month , .year], from: weekDateTime)
-        let year =  String(describing: components.year!)
-        let month = String(describing: components.month!)
-        let day = String(describing: components.day!)
+        
+        func normalNumber(_ number: Int?) -> String {
+            guard let number = number else { return "" }
+            return number < 10 ? "0\(number)" : String(describing: number)
+        }
+        let year = normalNumber(components.year)
+        let month = normalNumber(components.month)
+        let day = normalNumber(components.day)
+        
         var add = time
         add += time < 0 ? 13*secondsInDay : time == 0 ? 6*secondsInDay : -secondsInDay
         let weekDateTime1 = weekDateTime.addingTimeInterval(add)
         let components1 = calendar.components([.day , .month , .year], from: weekDateTime1)
-        let year1 =  String(describing: components1.year!)
-        let month1 = String(describing: components1.month!)
-        let day1 = String(describing: components1.day!)
-        let text = "\(day).\(month).\(year) - \(day1).\(month1).\(year1)"
+        let year1 = normalNumber(components1.year)
+        let month1 = normalNumber(components1.month)
+        let day1 = normalNumber(components1.day)
+        let text = day + "." + month + "." + year + " - " + day1 + "." + month1 + "." + year1
         if components.day! > 25 && components.month! == 8 && !firstWeek || components.day! == 1 && components.month! == 9 && !firstWeek {
             firstWeek = true
             self.arrOfWeeks.insert(text, at: 0)

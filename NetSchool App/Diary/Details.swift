@@ -194,7 +194,7 @@ class Details: UIViewController, UITextViewDelegate {
         case .diary:
 //            if lesson?.homework ?? false { createDoneBTN() }
             self.files = [File(link: "", name: "Критерии.pdf", size: nil)]
-            var attribute = self.createAttribute(color: self.lesson!.color)
+            var attribute = self.createAttribute(color: self.lesson!.getColor())
             let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
             attribute = self.createAttribute()
             string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))

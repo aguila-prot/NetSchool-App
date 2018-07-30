@@ -11,7 +11,6 @@ class More: UIViewController, UITableViewDelegate, UITableViewDataSource {
         super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 100
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
