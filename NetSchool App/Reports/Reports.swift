@@ -19,7 +19,7 @@ class Reports: UIViewController {
         start = staticStart
         end = staticEnd
     }
-    
+    //Just for test
     private static func getADTandDDT() -> (ADT: String, DDT: String) {
         let (date, calendar) = (Date(), Calendar.current)
         let (year, month) = (calendar.component(.year, from: date), calendar.component(.month, from: date))
