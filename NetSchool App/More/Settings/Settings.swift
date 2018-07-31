@@ -102,6 +102,7 @@ extension Settings: UITableViewDataSource, UITableViewDelegate {
                 }
                 let (title, frame) = getValues()
                 colorPaletteAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
+                colorPaletteAlert.view.tintColor = UIColor(hex: "424242")
                 colorPickerView = ColorPickerView(frame: frame)
                 colorPaletteAlert.addCancelAction
                 colorPickerView.delegate = self
@@ -141,7 +142,7 @@ extension Settings: ColorPickerViewDelegate, ColorPickerViewDelegateFlowLayout {
         let navigationBarAppearance = UINavigationBar.appearance()
         let sharedApplication = UIApplication.shared
         navigationBarAppearance.barTintColor = darkSchemeColor()
-        sharedApplication.keyWindow?.tintColor = UIColor(hex: "424242")//darkSchemeColor().darker()
+//        sharedApplication.keyWindow?.tintColor = UIColor(hex: "424242")//darkSchemeColor().darker()
         UITabBar.appearance().tintColor = darkSchemeColor()
         navigationController?.navigationBar.barTintColor = darkSchemeColor()
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.schemeTitleColor]

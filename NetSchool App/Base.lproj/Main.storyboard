@@ -981,6 +981,14 @@
                                             <outlet property="TaskTextView" destination="e6B-Dj-0hM" id="h1x-EH-0yB"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell3" rowHeight="24" id="evC-Ca-2uG" customClass="TaskTextCell" customModule="NetSchool_App" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="116" width="375" height="24"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="evC-Ca-2uG" id="a1c-Kq-9wI">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="23.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="YhO-Xd-EzS" id="DSk-TY-pR4"/>

@@ -123,6 +123,10 @@ class Details: UIViewController, UITextViewDelegate {
         task?.cancel()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        UIApplication.shared.keyWindow?.tintColor = UIColor(hex: "424242")
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         tableView.deselectSelectedRow
     }
@@ -189,18 +193,18 @@ class Details: UIViewController, UITextViewDelegate {
             status = .loading
             tableView.reloadData()
         }
-        UIApplication.shared.keyWindow?.tintColor = UIColor(hex: "650794")
+        UIApplication.shared.keyWindow?.tintColor = darkSchemeColor()
         switch detailType {
         case .diary:
 //            if lesson?.homework ?? false { createDoneBTN() }
             self.files = [File(link: "", name: "Критерии.pdf", size: nil)]
             var attribute = self.createAttribute(color: self.lesson!.getColor())
             let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
-            attribute = self.createAttribute()
+            attribute = self.createAttribute(color: UIColor(hex: "5E5E5E"))
             string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))
-            attribute = self.createAttribute(fontSize: 24, bold: true)
+            attribute = self.createAttribute(fontSize: 24, color: UIColor(hex: "303030"), bold: true)
             string.append(self.attributedString(string: "\(self.lesson!.title)\n", attribute))
-            attribute = self.createAttribute(fontSize: 14)
+            attribute = self.createAttribute(fontSize: 14, color: UIColor(hex: "424242"))
             let taskDescription =
                 //            "Формулировка задания - с. 247, в. 8 \n\nОбразцы:\nроман Ж.-Ж. Руссо \"Юлия или Новая Элоиза\" (https://www.e-reading.club/book.php?book=1023373)\nроман И.-В. Гете \"Страдания молодого Вертера\" (https://www.e-reading.club/bookreader.php/14656/Gete_-_Stradaniya_yunogo_Vertera.html)\n\nОба романа написаны как серия писем. После задания напишите короткое объяснение приемов, образов и тем, которые вы использовали. Критерии оценивания см. в присоединенном файле\n\nРаботы пришлите мне на почту: galina1267@inbox.ru"
             "Выполнить ту работу, которую мы обсудили (завтра на уроке у каждого должен быть оформленный титульный лист с названием (если вы придумываете название), содержание, 1-2 написанных \"главы\"). Если вы пишете о родителях и других родственниках - подумайте, о чём именно уместно, важно и интересно рассказать. Порасспрашивайте их, возможно, узнаете много нового :) Ещё раз присылаю ссылку на автобиографию Маяковского, которую он назвал \"Я сам\" https://ru.wikisource.org/wiki/%D0%AF_%D1%81%D0%B0%D0%BC_(%D0%9C%D0%B0%D1%8F%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9) - посмотрите, как можно выстраивать текст, о чём писать и т.д. Работы пришлите мне на почту: galina1267@netschool.app!!"
@@ -250,7 +254,7 @@ class Details: UIViewController, UITextViewDelegate {
         load()
     }
     
-    private func createAttribute(fontSize: CGFloat = 13, color: UIColor = .black, bold: Bool = false) -> [NSAttributedStringKey : NSObject] {
+    private func createAttribute(fontSize: CGFloat = 15, color: UIColor = .black, bold: Bool = false) -> [NSAttributedStringKey : NSObject] {
         let font = bold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize)
         return [NSAttributedStringKey.font: font, NSAttributedStringKey.foregroundColor: color]
     }
@@ -368,6 +372,10 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
             cell.TaskTextView.attributedText = attrStr
             cell.TaskTextView.delegate = self
             cell.separatorInset = UIEdgeInsets(top: 0, left: lesson?.isHomework ?? false ? 15 : cell.bounds.size.width, bottom: 0, right: 0)
+//            let myBackView = UIView(frame: cell.frame)
+//            myBackView.backgroundColor = .clear
+//            cell.selectedBackgroundView = myBackView
+            cell.selectionStyle = .none
             return cell
         } else {
             if lesson?.isHomework ?? false {
@@ -378,8 +386,16 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
                     cell.setSelection
                     cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
                     return cell
+                } else if indexPath.row == 2 {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Cell3", for: indexPath)
+                    cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0)
+//                    let myBackView = UIView(frame: cell.frame)
+//                    myBackView.backgroundColor = .clear
+//                    cell.selectedBackgroundView = myBackView
+                    cell.selectionStyle = .none
+                    return cell
                 } else {
-                    return fileCell(index: indexPath.row - 2)
+                    return fileCell(index: indexPath.row - 3)
                 }
             } else {
                 return fileCell(index: indexPath.row - 1)
@@ -406,20 +422,26 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
             if indexPath.row == 1 {
                 tableView.deselectSelectedRow
                 makeDone()
-            } else {
+            } else if indexPath.row != 2 {
                 openWebView(index: indexPath.row - 2)
             }
         } else {
+            if detailType == .diary && indexPath.row == 2 {
+                return
+            }
             openWebView(index: indexPath.row - 1)
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if detailType == .diary && indexPath.row == 2 {
+            return 24
+        }
         return indexPath.row == 0 ? UITableViewAutomaticDimension : 44
     }
     func numberOfSections(in tableView: UITableView) -> Int { return 1 }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if detailType == .diary && status == .successful && (lesson?.isHomework ?? false)  {
-            return files.count + 2
+            return files.count + 3
             
         }
         return status == .successful ? 1 + files.count : 0

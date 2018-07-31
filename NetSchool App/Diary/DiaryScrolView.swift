@@ -136,7 +136,7 @@ class DiaryViewController: UIViewController {
             presenter.sourceView = sender
             presenter.sourceRect = sender.bounds
         }
-        🚨.view.tintColor = UIColor(red: 74/255, green: 88/255, blue: 94/255, alpha: 1)
+        🚨.view.tintColor = UIColor(hex: "424242")
         🚨.addCancelAction
         🚨.popoverPresentationController?.permittedArrowDirections = .up
         self.present(🚨)
