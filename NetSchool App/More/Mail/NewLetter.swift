@@ -835,17 +835,6 @@ class AdressBook: UIViewController, UISearchBarDelegate {
     private func loadAdressBook() {
         switch adressBookType {
         case .schoolList:
-//            loginView?.adressBook = [
-//                "Е": [School(name: "Европейская гимназия", link: "http://62.117.74.43/", letter: "ЕГ", ID: 1)],
-//                "Н": [School(name: "Новая гуманитарная школа", link: "http://91.200.226.70/", letter: "НГ", ID: 2)],
-//                "К": [School(name: "Школа \"26 Кадр\"", link: "http://keks.com", letter: "К", ID: 3)],
-//                "О": [School(name: "СОШ «Образование Плюс»", link: "http://123.67.92.1", letter: "ОП", ID: 4)],
-//                "1": [School(name: "Школа №1489", link: "http://school-1489.ru", letter: "Ш", ID: 5),School(name: "Школа №1329", link: "http://1329school.ru", letter: "Ш", ID: 6),School(name: "Школа №157", link: "http://157.43.54.23", letter: "Ш", ID: 7)]
-//            ]
-//            loginView?.letters = ["1", "Е", "Н", "К", "О"]
-//            status = .successful
-//            self.setupSearchBar()
-//            self.updateSearchResults(for: self.searchController)
             if loginView?.adressBook.isEmpty ?? false {
                 let url = NSURL(string: "http://77.73.26.195:8000/get_school_list")
                 URLSession.shared.dataTask(with: (url as URL?)!) {(data, response, error) -> Void in

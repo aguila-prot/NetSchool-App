@@ -12,6 +12,7 @@ class JSONParser {
     private var group_data: [Group] = []
     private var forum_list: [Forum.ForumTopic] = []
     private var forum_detail: [ForumDetailTopic] = []
+    private var messages_list: [MailMessage] = []
     
     init(data: String, type:Int) {
         self.status = 1
@@ -32,6 +33,7 @@ class JSONParser {
         case 11: school_resource()
         case 12: forum_handle_list()
         case 13: forum_detail_topic()
+        case 14: email_messages_list()
         default: ()
         }
     }
@@ -56,6 +58,20 @@ class JSONParser {
             rowHeights.append(max(label.frame.height + 10, 45))
         }
     }
+    
+    private func email_messages_list(){
+        guard let json = try? decoder.decode(EmailLettersListClass.self, from: inputData) else {
+            JSON_Error()
+            return
+        }
+        for i in json.letters{
+            messages_list.append(MailMessage(author: i.author, messageID: i.id, topic: i.title, date: i.date, isUnread: i.unread == "true" ? true : false))
+        }
+    }
+    func get_email_messages_list() -> [MailMessage]{
+        return messages_list
+    }
+    
     private func forum_detail_topic(){
         guard let json = try? decoder.decode(ForumInfoOfPostClass.self, from: inputData) else {
             JSON_Error()

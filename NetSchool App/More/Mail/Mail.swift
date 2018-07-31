@@ -58,24 +58,43 @@ class Mail: UIViewController {
     /// Loads messages in group
     @objc private func loadData() {
         status = .successful
+        let data = """
+        {
+            "letters": [
+                {
+                    "date": "26.05.2018 9:38",
+                    "id": "1",
+                    "author": "Зыченко И. Б.",
+                    "title": "Пропуск урока французского языка",
+                    "unread": "true"
+                },
+                {
+                    "date": "29.08.2017 19:54",
+                    "id": "2",
+                    "author": "Корнакова О. А.",
+                    "title": "Пример сообщения с ссылками и файлами",
+                    "unread": "false"
+                },
+                {
+                    "date": "03.10.2015 10:43",
+                    "id": "3",
+                    "author": "Рябцева Е. Б.",
+                    "title": "День учителя",
+                    "unread": "false"
+                }
+            ]
+        }
+        """
+        let json = JSONParser(data:data, type: 14)
         switch key {
         case 0:
-            messages = [
-                MailMessage(author: "Зыченко И. Б.", messageID: "", topic: "Пропуск урока французского языка", date: "26.05.2018 9:38", isUnread: true),
-                MailMessage(author: "Рябцева Е. Б.", messageID: "", topic: "Пример сообщения с ссылками и файлами", date: "29.08.2017 19:54", isUnread: false),
-                MailMessage(author: "Зибер И.А.", messageID: "", topic: "оценки за четверть", date: "23.10.2015 19:02", isUnread: false),
-                MailMessage(author: "Зибер И.А.", messageID: "", topic: "День учителя", date: "03.10.2015 10:43", isUnread: false)
-            ]
+            messages = json.get_email_messages_list()
         case 1:
-            messages = [
-                MailMessage(author: "Корнакова О. А.", messageID: "", topic: "Fw: Re: Тема", date: "21.04.2018 0:48", isUnread: false),
-            ]
+            messages = json.get_email_messages_list()
         case 2:
-            messages = []
+            messages = json.get_email_messages_list()
         case 3:
-            messages = [
-                MailMessage(author: "Корнакова О. А.", messageID: "", topic: "Тема", date: "23.01.2018 14:34", isUnread: false),
-            ]
+            messages = json.get_email_messages_list()
         default: ()
         }
         
