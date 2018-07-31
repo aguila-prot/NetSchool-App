@@ -51,7 +51,35 @@
 		EDDBF98920EFCFB0005CDAA6 /* ForumDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDBF98820EFCFB0005CDAA6 /* ForumDetail.swift */; };
 		EDDBF98B20EFD003005CDAA6 /* NewForumMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDBF98A20EFD003005CDAA6 /* NewForumMessage.swift */; };
 		EDDBF98E20F0C669005CDAA6 /* Resorces.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDDBF98D20F0C669005CDAA6 /* Resorces.swift */; };
+		FAE6C8C22110958C00D351A5 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE6C8C12110958C00D351A5 /* NotificationCenter.framework */; };
+		FAE6C8C52110958C00D351A5 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE6C8C42110958C00D351A5 /* TodayViewController.swift */; };
+		FAE6C8C82110958C00D351A5 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAE6C8C62110958C00D351A5 /* MainInterface.storyboard */; };
+		FAE6C8CC2110958C00D351A5 /* Shedule.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FAE6C8C02110958C00D351A5 /* Shedule.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FAE6C8CA2110958C00D351A5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED05E0E120E69F6800A632ED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAE6C8BF2110958C00D351A5;
+			remoteInfo = Shedule;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FAE6C8D02110958C00D351A5 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FAE6C8CC2110958C00D351A5 /* Shedule.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		5EC6B519A14B4052DDA3F46E /* Pods-NetSchool App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetSchool App.release.xcconfig"; path = "Pods/Target Support Files/Pods-NetSchool App/Pods-NetSchool App.release.xcconfig"; sourceTree = "<group>"; };
@@ -104,6 +132,11 @@
 		EDDBF98820EFCFB0005CDAA6 /* ForumDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumDetail.swift; sourceTree = "<group>"; };
 		EDDBF98A20EFD003005CDAA6 /* NewForumMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewForumMessage.swift; sourceTree = "<group>"; };
 		EDDBF98D20F0C669005CDAA6 /* Resorces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resorces.swift; sourceTree = "<group>"; };
+		FAE6C8C02110958C00D351A5 /* Shedule.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Shedule.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAE6C8C12110958C00D351A5 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		FAE6C8C42110958C00D351A5 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		FAE6C8C72110958C00D351A5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		FAE6C8C92110958C00D351A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +148,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAE6C8BD2110958C00D351A5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAE6C8C22110958C00D351A5 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -122,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				A4A83967475EE6E32D410847 /* Pods_NetSchool_App.framework */,
+				FAE6C8C12110958C00D351A5 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -172,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				ED05E0EB20E69F6800A632ED /* NetSchool App */,
+				FAE6C8C32110958C00D351A5 /* Shedule */,
 				ED05E0EA20E69F6800A632ED /* Products */,
 				338B5F2EF06C8557B4E65EE7 /* Pods */,
 				0F3ACDD1C4FD3EFEEB733591 /* Frameworks */,
@@ -182,6 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				ED05E0E920E69F6800A632ED /* NetSchool App.app */,
+				FAE6C8C02110958C00D351A5 /* Shedule.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -351,6 +395,16 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		FAE6C8C32110958C00D351A5 /* Shedule */ = {
+			isa = PBXGroup;
+			children = (
+				FAE6C8C42110958C00D351A5 /* TodayViewController.swift */,
+				FAE6C8C62110958C00D351A5 /* MainInterface.storyboard */,
+				FAE6C8C92110958C00D351A5 /* Info.plist */,
+			);
+			path = Shedule;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -363,15 +417,34 @@
 				ED05E0E620E69F6800A632ED /* Frameworks */,
 				ED05E0E720E69F6800A632ED /* Resources */,
 				9E3EC4AFB3A87CACF3AADEA1 /* [CP] Embed Pods Frameworks */,
+				FAE6C8D02110958C00D351A5 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FAE6C8CB2110958C00D351A5 /* PBXTargetDependency */,
 			);
 			name = "NetSchool App";
 			productName = "NetSchool App";
 			productReference = ED05E0E920E69F6800A632ED /* NetSchool App.app */;
 			productType = "com.apple.product-type.application";
+		};
+		FAE6C8BF2110958C00D351A5 /* Shedule */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAE6C8CF2110958C00D351A5 /* Build configuration list for PBXNativeTarget "Shedule" */;
+			buildPhases = (
+				FAE6C8BC2110958C00D351A5 /* Sources */,
+				FAE6C8BD2110958C00D351A5 /* Frameworks */,
+				FAE6C8BE2110958C00D351A5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Shedule;
+			productName = Shedule;
+			productReference = FAE6C8C02110958C00D351A5 /* Shedule.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -386,6 +459,9 @@
 					ED05E0E820E69F6800A632ED = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 0940;
+					};
+					FAE6C8BF2110958C00D351A5 = {
+						CreatedOnToolsVersion = 9.4.1;
 					};
 				};
 			};
@@ -403,6 +479,7 @@
 			projectRoot = "";
 			targets = (
 				ED05E0E820E69F6800A632ED /* NetSchool App */,
+				FAE6C8BF2110958C00D351A5 /* Shedule */,
 			);
 		};
 /* End PBXProject section */
@@ -422,6 +499,14 @@
 				ED05E0F720E69F6B00A632ED /* Assets.xcassets in Resources */,
 				ED05E14320ED5DC600A632ED /* Blogger_Sans-Bold.ttf in Resources */,
 				ED05E0F220E69F6800A632ED /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAE6C8BE2110958C00D351A5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAE6C8C82110958C00D351A5 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,7 +598,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAE6C8BC2110958C00D351A5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAE6C8C52110958C00D351A5 /* TodayViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FAE6C8CB2110958C00D351A5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAE6C8BF2110958C00D351A5 /* Shedule */;
+			targetProxy = FAE6C8CA2110958C00D351A5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		ED05E0F020E69F6800A632ED /* Main.storyboard */ = {
@@ -530,6 +631,14 @@
 				ED05E0F920E69F6B00A632ED /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		FAE6C8C62110958C00D351A5 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAE6C8C72110958C00D351A5 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -653,6 +762,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D918501940C762B2DAC3ACFF /* Pods-NetSchool App.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -678,6 +788,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5EC6B519A14B4052DDA3F46E /* Pods-NetSchool App.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -693,6 +804,44 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Modules";
 				SWIFT_OBJC_BRIDGING_HEADER = "NetSchool App/NetSchool App-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		FAE6C8CD2110958C00D351A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 23EX9253R3;
+				INFOPLIST_FILE = Shedule/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "kir4567.NetSchool-App.Shedule";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FAE6C8CE2110958C00D351A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 23EX9253R3;
+				INFOPLIST_FILE = Shedule/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "kir4567.NetSchool-App.Shedule";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -715,6 +864,15 @@
 			buildConfigurations = (
 				ED05E0FF20E69F6B00A632ED /* Debug */,
 				ED05E10020E69F6B00A632ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAE6C8CF2110958C00D351A5 /* Build configuration list for PBXNativeTarget "Shedule" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAE6C8CD2110958C00D351A5 /* Debug */,
+				FAE6C8CE2110958C00D351A5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
