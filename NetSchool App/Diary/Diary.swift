@@ -36,7 +36,7 @@ class DiaryContentViewController: ViewControllerErrorHandler {
         table = tableView
         if !getString(forKey: "username").isEmpty && !getString(forKey: "password").isEmpty && haveLoadPermission && goToLogin {
             goToLogin = false
-            loadData()
+            load()
         }
     }
     
@@ -54,7 +54,7 @@ class DiaryContentViewController: ViewControllerErrorHandler {
             present(loginVC)
         } else if haveLoadPermission {
             impactFeedback()
-            loadData()
+            load()
         } else {
             status = .canceled
             tableView.reloadData()
@@ -63,106 +63,27 @@ class DiaryContentViewController: ViewControllerErrorHandler {
     
     private func setupTableView() {
         tableView.tableFooterView = UIView()
-        refreshControl.addTarget(self, action: #selector(loadData), for:  .valueChanged)
+        refreshControl.addTarget(self, action: #selector(load), for:  .valueChanged)
         tableView.addSubview(refreshControl)
         automaticallyAdjustsScrollViewInsets = false
 //        bottomConstraint.setBottomConstraint
     }
     
-    @objc override func loadData() {
-        let sessionName = UserDefaults.standard.value(forKey: "sessionName") as? String ?? ""
-        let cookie = UserDefaults.standard.value(forKey: sessionName) as? String ?? ""
-        guard !sessionName.isEmpty && !cookie.isEmpty else {
-            print("No Authorization")
-            goToLogin = true
-            let loginVC = Login()
-            loginVC.navigationBarHeight = self.navigationController?.navigationBar.frame.height ?? 0
-            loginVC.modalTransitionStyle = .coverVertical
-            present(loginVC)
-            return
-        }
+    @objc override func load() {
         let jsonData = try? JSONSerialization.data(withJSONObject: ["week": weekToLoad ?? "", "id": 11198])
-        var request = URLRequest(url: URL(string: "http://77.73.26.195:8000/get_tasks_and_marks")!)
-        request.httpMethod = "POST"
-        print("*** request json ***")
-        print(String.init(data: jsonData!, encoding: .utf8))
-        request.setValue(sessionName, forHTTPHeaderField: "sessionName")
-        request.setValue(cookie, forHTTPHeaderField: sessionName)
-        request.httpBody = jsonData
-//        days = [
-//            JournalDay(date: "12.12.2018, Пн", lessons:
-//                [
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: false, name: "Математика", mark: "5", title: "См. подробности", type: "Д")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Русский язык", mark: "4", title: "Причастия и деепричастия", type: "О")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 0, inTime: true, name: "Физика", mark: "-", title: "Контрольная работа по теме \"Звуковые волны\"", type: "В"))
-//                ]
-//            ),
-//            JournalDay(date: "13.12.2018, Вт", lessons:
-//                [
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 2, inTime: true, name: "Математика", mark: "5", title: "См. подробности", type: "Д")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 0, inTime: true, name: "Русский язык", mark: "4", title: "Причастия и деепричастия", type: "О")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Физика", mark: "-", title: "Контрольная работа по теме \"Звуковые волны\"", type: "В"))
-//                ]
-//            ),
-//            JournalDay(date: "14.12.2018, Ср", lessons:
-//                [
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Математика", mark: "5", title: "См. подробности", type: "Д")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Русский язык", mark: "4", title: "Причастия и деепричастия", type: "Ч")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Физика", mark: "-", title: "Контрольная работа по теме \"Звуковые волны\"", type: "Л")),
-//
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Математика", mark: "5", title: "См. подробности", type: "Р")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Русский язык", mark: "4", title: "Причастия и деепричастия", type: "Н")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Физика", mark: "-", title: "Контрольная работа по теме \"Звуковые волны\"", type: "П")),
-//
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 2, inTime: true, name: "Математика", mark: "5", title: "См. подробности", type: "П")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 0, inTime: true, name: "Русский язык", mark: "4", title: "Причастия и деепричастия", type: "Ч")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Физика", mark: "-", title: "Контрольная работа по теме \"Звуковые волны\"", type: "Т")),
-//
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 2, inTime: true, name: "Математика", mark: "5", title: "См. подробности", type: "К")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 0, inTime: true, name: "Русский язык", mark: "4", title: "Причастия и деепричастия", type: "И")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 1, inTime: true, name: "Физика", mark: "-", title: "Контрольная работа по теме \"Звуковые волны\"", type: "С")),
-//
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 2, inTime: true, name: "Математика", mark: "5", title: "См. подробности", type: "Р")),
-//                    JournalLesson(Lesson(AID: 1, CID: 1, TP: 1, status: 0, inTime: true, name: "Русский язык", mark: "4", title: "Причастия и деепричастия", type: "А")),
-//                ]
-//            )
-//        ]
-//        status = .successful
-//        reloadTable()
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard error == nil,
-                let data = data,
-                let httpResponse = response as? HTTPURLResponse else {
-                DispatchQueue.main.async {
-                    self.status = .error
-                    self.errorDescription = ReachabilityManager.shared.isNetworkAvailable ? error?.localizedDescription ?? "Нет ответа от сервера" : "Вероятно, соединение с интернетом прервано"
-                    self.tableView.reloadData()
-                }
-                return
-            }
-            print(httpResponse)
-            print(String.init(data: data, encoding: .utf8))
-            guard httpResponse.statusCode == 200 else {
-                self.errorHandle(httpResponse.statusCode)
-                return
-            }
-            let decoder = JSONDecoder()
-            if let json = try? decoder.decode(Days.self, from: data) {
-                print(json)
-                self.days = json.days.map{ JournalDay(date: $0.date, lessons: $0.lessons.map{ JournalLesson($0) }) }
-                self.status = .successful
-                self.reloadTable()
-            } else if data.count == 13,
-                let daysData = String(data: data, encoding: String.Encoding.utf8),
-                daysData == "{\"days\":null}" {
-                self.days.removeAll()
-                self.status = .successful
-                self.reloadTable()
-            } else {
+        loadData(jsonData: jsonData, method: "get_tasks_and_marks", jsonStruct: Days.self) { data, json in
+            guard let json = json as? Days else {
                 self.status = .error
                 self.reloadTable()
+                return
             }
-        }.resume()
+            self.days = json.days.map{ JournalDay(date: $0.date, lessons: $0.lessons.map{ JournalLesson($0) }) }
+            if self.days.count == 1 && self.days[0].count() == 1 && self.days[0].getLesson(0).title.isEmpty {
+                self.days.removeAll()
+            }
+            self.status = .successful
+            self.reloadTable()
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -192,82 +192,45 @@ class Details: ViewControllerErrorHandler, UITextViewDelegate {
         self.present(🚨)
     }
     
-    @objc private func load() {
-        if status != .loading {
-            status = .loading
-            tableView.reloadData()
-        }
+    @objc override func load() {
         UIApplication.shared.keyWindow?.tintColor = darkSchemeColor()
         switch detailType {
         case .diary:
-            let sessionName = UserDefaults.standard.value(forKey: "sessionName") as? String ?? ""
-            let cookie = UserDefaults.standard.value(forKey: sessionName) as? String ?? ""
-            guard !sessionName.isEmpty && !cookie.isEmpty else {
-                print("No Authorization")
-//                goToLogin = true
-                let loginVC = Login()
-                loginVC.navigationBarHeight = self.navigationController?.navigationBar.frame.height ?? 0
-                loginVC.modalTransitionStyle = .coverVertical
-                present(loginVC)
-                return
-            }
             let jsonData = try? JSONSerialization.data(withJSONObject: ["id": lesson?.lessonID.AID ?? -5])
-            var request = URLRequest(url: URL(string: "http://77.73.26.195:8000/get_lesson_description")!)
-            request.httpMethod = "POST"
-            print("*** request json ***")
-            print(String.init(data: jsonData!, encoding: .utf8))
-            request.setValue(sessionName, forHTTPHeaderField: "sessionName")
-            request.setValue(cookie, forHTTPHeaderField: sessionName)
-            request.httpBody = jsonData
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard error == nil,
-                    let data = data,
-                    let httpResponse = response as? HTTPURLResponse else {
-                        DispatchQueue.main.async {
-                            self.status = .error
-                            self.tableView.reloadData()
-                        }
-                        return
-                }
-                print(httpResponse)
-                print(String.init(data: data, encoding: .utf8))
-                
-                guard httpResponse.statusCode == 200 else {
-                    self.errorHandle(httpResponse.statusCode)
-                    return
-                }
-                let decoder = JSONDecoder()
-                if let json = try? decoder.decode(LessonDescription.self, from: data) {
-                    if !json.file.isEmpty {
-                        self.files = [File(link: json.file, name: json.file, size: nil)]
-                    }
-                    var attribute = self.createAttribute(color: self.lesson!.getColor())
-                    let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
-                    attribute = self.createAttribute(color: UIColor(hex: "5E5E5E"))
-                    string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))
-                    attribute = self.createAttribute(fontSize: 24, color: UIColor(hex: "303030"), bold: true)
-                    string.append(self.attributedString(string: "\(self.lesson!.title)\n", attribute))
-                    attribute = self.createAttribute(fontSize: 14, color: UIColor(hex: "424242"))
-                    
-                    var taskDescription = ""
-                    for line in json.comments {
-                        taskDescription += line + "\n"
-                    }
-                    string.append(self.attributedString(string: "\n\(taskDescription)\n", attribute))
-                    attribute = self.createAttribute(color: .gray)
-                    let author = ""
-                    string.append(self.attributedString(string: "\(self.fullDate!),\n\(author)\n", attribute))
-                    self.attrStr = string
-                    self.status = .successful
-                    print(json)
-                    self.reloadTable()
-                } else {
+            loadData(jsonData: jsonData, method: "get_lesson_description", jsonStruct: LessonDescription.self) { data, json in
+                guard let json = json as? LessonDescription else {
                     self.status = .error
                     self.reloadTable()
+                    return
                 }
-            }.resume()
+                if !json.file.isEmpty {
+                    self.files = [File(link: json.file, name: json.file, size: nil)]
+                }
+                var attribute = self.createAttribute(color: self.lesson!.getColor())
+                let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
+                attribute = self.createAttribute(color: UIColor(hex: "5E5E5E"))
+                string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))
+                attribute = self.createAttribute(fontSize: 24, color: UIColor(hex: "303030"), bold: true)
+                string.append(self.attributedString(string: "\(self.lesson!.title)\n", attribute))
+                attribute = self.createAttribute(fontSize: 14, color: UIColor(hex: "424242"))
+                
+                var taskDescription = ""
+                for line in json.comments {
+                    taskDescription += line + "\n"
+                }
+                string.append(self.attributedString(string: "\n\(taskDescription)\n", attribute))
+                attribute = self.createAttribute(color: .gray)
+                let author = ""
+                string.append(self.attributedString(string: "\(self.fullDate!),\n\(author)\n", attribute))
+                self.attrStr = string
+                self.status = .successful
+                self.reloadTable()
+            }
         case .mail:
+            if status != .loading {
+                status = .loading
+                tableView.reloadData()
+            }
             var attribute = self.createAttribute(fontSize: 24, bold: true)
             let string = self.attributedString(string: "Обновлённая версия Насреддина\n", attribute)
             attribute = self.createAttribute(fontSize: 14)

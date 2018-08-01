@@ -65,15 +65,61 @@ class ViewControllerErrorHandler: UIViewController {
         }
     }
     
-    func loadData() {
-        print("You must override this method")
-        status = .successful
+    func load() {
+        fatalError("Must Override")
+    }
+    
+    func loadData<T>(jsonData: Data?, method: String, methodType: String = "POST", jsonStruct: T.Type, completion: @escaping (_ data: Data, _ json: Decodable) -> Void ) -> Void where T : Decodable {
+        let sessionName = UserDefaults.standard.value(forKey: "sessionName") as? String ?? ""
+        let cookie = UserDefaults.standard.value(forKey: sessionName) as? String ?? ""
+        guard !sessionName.isEmpty && !cookie.isEmpty else {
+            print("No Authorization")
+            goToLogin = true
+            let loginVC = Login()
+            loginVC.navigationBarHeight = self.navigationController?.navigationBar.frame.height ?? 0
+            loginVC.modalTransitionStyle = .coverVertical
+            present(loginVC)
+            return
+        }
+        var request = URLRequest(url: URL(string: "http://77.73.26.195:8000/\(method)")!)
+        request.httpMethod = methodType
+        print("*** request json ***")
+        print(String.init(data: jsonData!, encoding: .utf8))
+        request.setValue(sessionName, forHTTPHeaderField: "sessionName")
+        request.setValue(cookie, forHTTPHeaderField: sessionName)
+        request.httpBody = jsonData
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil,
+                let data = data,
+                let httpResponse = response as? HTTPURLResponse else {
+                    DispatchQueue.main.async {
+                        self.status = .error
+                        self.errorDescription = ReachabilityManager.shared.isNetworkAvailable ? error?.localizedDescription ?? "Нет ответа от сервера" : "Вероятно, соединение с интернетом прервано"
+                        self.table.reloadData()
+                    }
+                    return
+            }
+            print(httpResponse)
+            print(String.init(data: data, encoding: .utf8))
+            guard httpResponse.statusCode == 200 else {
+                self.errorHandle(httpResponse.statusCode)
+                return
+            }
+            let decoder = JSONDecoder()
+            if let json = try? decoder.decode(jsonStruct, from: data) {
+                completion(data, json)
+            } else {
+                self.status = .error
+                self.errorDescription = "Не удалось интерпретировать json"
+                self.reloadTable()
+            }
+        }.resume()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         if !getString(forKey: "username").isEmpty && !getString(forKey: "password").isEmpty && goToLogin {
             goToLogin = false
-            loadData()
+            load()
         }
     }
 }
