@@ -132,6 +132,8 @@
 		EDDBF98820EFCFB0005CDAA6 /* ForumDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumDetail.swift; sourceTree = "<group>"; };
 		EDDBF98A20EFD003005CDAA6 /* NewForumMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewForumMessage.swift; sourceTree = "<group>"; };
 		EDDBF98D20F0C669005CDAA6 /* Resorces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resorces.swift; sourceTree = "<group>"; };
+		FA23A5A02111BD730079DB4F /* Shedule.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shedule.entitlements; sourceTree = "<group>"; };
+		FA23A5A12111BD860079DB4F /* NetSchool App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "NetSchool App.entitlements"; sourceTree = "<group>"; };
 		FAE6C8C02110958C00D351A5 /* Shedule.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Shedule.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAE6C8C12110958C00D351A5 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		FAE6C8C42110958C00D351A5 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 		ED05E0EB20E69F6800A632ED /* NetSchool App */ = {
 			isa = PBXGroup;
 			children = (
+				FA23A5A12111BD860079DB4F /* NetSchool App.entitlements */,
 				ED05E0EC20E69F6800A632ED /* AppDelegate.swift */,
 				ED05E0F020E69F6800A632ED /* Main.storyboard */,
 				ED05E13B20ED406A00A632ED /* Reports */,
@@ -398,6 +401,7 @@
 		FAE6C8C32110958C00D351A5 /* Shedule */ = {
 			isa = PBXGroup;
 			children = (
+				FA23A5A02111BD730079DB4F /* Shedule.entitlements */,
 				FAE6C8C42110958C00D351A5 /* TodayViewController.swift */,
 				FAE6C8C62110958C00D351A5 /* MainInterface.storyboard */,
 				FAE6C8C92110958C00D351A5 /* Info.plist */,
@@ -459,9 +463,19 @@
 					ED05E0E820E69F6800A632ED = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 0940;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+						};
 					};
 					FAE6C8BF2110958C00D351A5 = {
 						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
