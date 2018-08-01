@@ -15,6 +15,91 @@ func darkSchemeColor(key: Int) -> UIColor {
     return UIColor.init(hex: Settings.colorsHEXs[key])
 }
 
+class ViewControllerErrorHandler: UIViewController {
+    var status: Status = .loading
+    var goToLogin = false
+    var errorDescription = ""
+    var refreshControl = UIRefreshControl()
+    var table = UITableView()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    func errorHandle(_ statusCode: Int) {
+        self.status = .error
+        switch statusCode {
+        case 400:
+            errorDescription = "Неверные данные в запросе"
+        case 401:
+            DispatchQueue.main.async {
+                self.goToLogin = true
+                let loginVC = Login()
+                loginVC.navigationBarHeight = self.navigationController?.navigationBar.frame.height ?? 0
+                loginVC.modalTransitionStyle = .coverVertical
+                self.present(loginVC)
+            }
+        case 402:
+            errorDescription = "Нет доступа к сервесу"
+        case 404:
+            errorDescription = "Неверный путь запроса"
+        case 405:
+            errorDescription = "Неверный метод запроса"
+        case 500:
+            errorDescription = "Фатальная ошибка на сервере"
+        case 501:
+            errorDescription = "Запрос не реализован на сервере"
+        case 502:
+            errorDescription = "Ошибка на сервере школы"
+        default:
+            errorDescription = "Неизвестная ошибка"
+        }
+        if !goToLogin {
+            reloadTable()
+        }
+    }
+    
+    func reloadTable() {
+        DispatchQueue.main.async {
+            self.refreshControl.stop
+            self.table.reloadData()
+        }
+    }
+    
+    func loadData() {
+        print("You must override this method")
+        status = .successful
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if !getString(forKey: "username").isEmpty && !getString(forKey: "password").isEmpty && goToLogin {
+            goToLogin = false
+            loadData()
+        }
+    }
+}
+
+
+func errorHandle(statusCode: Int, slf: UIViewController) {
+    switch statusCode {
+    case 400:
+        ()
+    case 401:
+        let loginVC = Login()
+        loginVC.navigationBarHeight = slf.navigationController?.navigationBar.frame.height ?? 0
+        loginVC.modalTransitionStyle = .coverVertical
+        slf.present(loginVC)
+    case 402: ()
+    case 404: ()
+    case 405: ()
+    case 500: ()
+    case 501: ()
+    case 502: ()
+        
+    default:
+        ()
+    }
+}
+
 func lightSchemeColor() -> UIColor {
     let color = darkSchemeColor()
     let red = color.redValue

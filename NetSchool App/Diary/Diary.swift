@@ -20,22 +20,21 @@ struct Days: Codable {
     let days: [Day]
 }
 
-class DiaryContentViewController: UIViewController {
+class DiaryContentViewController: ViewControllerErrorHandler {
     
     @IBOutlet weak var tableView: UITableView!
     
     var haveLoadPermission = true
     var days = [JournalDay]()
     var weekToLoad: String?
-    private var (PCLID, refreshControl) = ("", UIRefreshControl())
-    var status: Status = .loading
-    private var goToLogin = false
+    private var PCLID = ""
     var actionIndexPath = IndexPath(row: 0, section: 0)
     /// used to cancel URLSessionTask
     private var task: URLSessionTask?    
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.deselectSelectedRow
+        table = tableView
         if !getString(forKey: "username").isEmpty && !getString(forKey: "password").isEmpty && haveLoadPermission && goToLogin {
             goToLogin = false
             loadData()
@@ -71,7 +70,7 @@ class DiaryContentViewController: UIViewController {
 //        bottomConstraint.setBottomConstraint
     }
     
-    @objc private func loadData() {
+    @objc override func loadData() {
         let sessionName = UserDefaults.standard.value(forKey: "sessionName") as? String ?? ""
         let cookie = UserDefaults.standard.value(forKey: sessionName) as? String ?? ""
         guard !sessionName.isEmpty && !cookie.isEmpty else {
@@ -137,38 +136,30 @@ class DiaryContentViewController: UIViewController {
                 let httpResponse = response as? HTTPURLResponse else {
                 DispatchQueue.main.async {
                     self.status = .error
+                    self.errorDescription = ReachabilityManager.shared.isNetworkAvailable ? error?.localizedDescription ?? "Нет ответа от сервера" : "Вероятно, соединение с интернетом прервано"
                     self.tableView.reloadData()
                 }
                 return
             }
             print(httpResponse)
             print(String.init(data: data, encoding: .utf8))
-            switch httpResponse.statusCode {
-            case 200:
-                let decoder = JSONDecoder()
-                if let json = try? decoder.decode(Days.self, from: data) {
-                    print(json)
-                    self.days = json.days.map{ JournalDay(date: $0.date, lessons: $0.lessons.map{ JournalLesson($0) }) }
-                    self.status = .successful
-                    self.reloadTable()
-                } else if data.count == 13,
-                    let daysData = String(data: data, encoding: String.Encoding.utf8),
-                    daysData == "{\"days\":null}" {
-                    self.days.removeAll()
-                    self.status = .successful
-                    self.reloadTable()
-                } else {
-                    self.status = .error
-                    self.reloadTable()
-                }
-            case 400:
-                print(400)
-                if let errorDescription = String(data: data, encoding: String.Encoding.utf8)  {
-                    print(errorDescription)
-                }
-                self.status = .error
+            guard httpResponse.statusCode == 200 else {
+                self.errorHandle(httpResponse.statusCode)
+                return
+            }
+            let decoder = JSONDecoder()
+            if let json = try? decoder.decode(Days.self, from: data) {
+                print(json)
+                self.days = json.days.map{ JournalDay(date: $0.date, lessons: $0.lessons.map{ JournalLesson($0) }) }
+                self.status = .successful
                 self.reloadTable()
-            default:
+            } else if data.count == 13,
+                let daysData = String(data: data, encoding: String.Encoding.utf8),
+                daysData == "{\"days\":null}" {
+                self.days.removeAll()
+                self.status = .successful
+                self.reloadTable()
+            } else {
                 self.status = .error
                 self.reloadTable()
             }
@@ -184,14 +175,6 @@ class DiaryContentViewController: UIViewController {
             destination.diaryVC = self
         }
     }
-    
-    private func reloadTable() {
-        DispatchQueue.main.async {
-            self.refreshControl.stop
-            self.tableView.reloadData()
-        }
-    }
-    
 }
 
 // MARK: - DIARY TABLE VIEW
@@ -213,7 +196,7 @@ extension DiaryContentViewController: UITableViewDelegate, UITableViewDataSource
             cell.firstStateIcon.image = UIImage(named: "newDot")
             cell.firstStateIcon.setImageBackgroundColor(typeColor)
             cell.backgroundColor = UIColor(red: 239/255, green: 238/255, blue: 244/255, alpha: 1)
-        case 2:
+        case 0:
             // done
             cell.subjectLabelConstraint.constant = 26
             cell.firstStateIcon.image = UIImage(named: "done")
@@ -266,7 +249,15 @@ extension DiaryContentViewController: UITableViewDelegate, UITableViewDataSource
         guard days.isEmpty else { return nil }
         switch status {
         case .loading: return self.view.loadingFooterView()
-        case .error: return self.view.errorFooterView()
+        case .error:
+//            return self.view.errorFooterView()
+            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 23))
+            footerView.backgroundColor = UIColor.clear
+            let footerLabel = UILabel(frame: CGRect(x: 0, y: 7, width: view.frame.size.width, height: 23))
+            footerLabel.addProperties
+            footerLabel.text = errorDescription
+            footerView.addSubview(footerLabel)
+            return footerView
         default:
             let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 23))
             footerView.backgroundColor = UIColor.clear
