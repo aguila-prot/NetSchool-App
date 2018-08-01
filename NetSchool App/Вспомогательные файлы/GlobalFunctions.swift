@@ -78,28 +78,6 @@ class ViewControllerErrorHandler: UIViewController {
     }
 }
 
-
-func errorHandle(statusCode: Int, slf: UIViewController) {
-    switch statusCode {
-    case 400:
-        ()
-    case 401:
-        let loginVC = Login()
-        loginVC.navigationBarHeight = slf.navigationController?.navigationBar.frame.height ?? 0
-        loginVC.modalTransitionStyle = .coverVertical
-        slf.present(loginVC)
-    case 402: ()
-    case 404: ()
-    case 405: ()
-    case 500: ()
-    case 501: ()
-    case 502: ()
-        
-    default:
-        ()
-    }
-}
-
 func lightSchemeColor() -> UIColor {
     let color = darkSchemeColor()
     let red = color.redValue

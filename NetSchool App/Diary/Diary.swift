@@ -248,15 +248,7 @@ extension DiaryContentViewController: UITableViewDelegate, UITableViewDataSource
         guard days.isEmpty else { return nil }
         switch status {
         case .loading: return self.view.loadingFooterView()
-        case .error:
-//            return self.view.errorFooterView()
-            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 23))
-            footerView.backgroundColor = UIColor.clear
-            let footerLabel = UILabel(frame: CGRect(x: 0, y: 7, width: view.frame.size.width, height: 23))
-            footerLabel.addProperties
-            footerLabel.text = errorDescription
-            footerView.addSubview(footerLabel)
-            return footerView
+        case .error: return errorFooterView()
         default:
             let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 23))
             footerView.backgroundColor = UIColor.clear

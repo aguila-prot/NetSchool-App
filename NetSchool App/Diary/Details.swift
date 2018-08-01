@@ -12,7 +12,7 @@ struct LessonDescription: Codable {
 }
 
 
-class Details: UIViewController, UITextViewDelegate {
+class Details: ViewControllerErrorHandler, UITextViewDelegate {
     
 //    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
@@ -35,8 +35,6 @@ class Details: UIViewController, UITextViewDelegate {
     lazy var files = [File]()
     /// attributed string with all text
     var attrStr: NSMutableAttributedString?
-    /// view status
-    var status: Status = .loading
     
     @available(iOS 10.0, *)
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
@@ -120,6 +118,7 @@ class Details: UIViewController, UITextViewDelegate {
     //MARK: - VIEW SETUP
     override func viewDidLoad() {
         super.viewDidLoad()
+        table = tableView
         setupUI()
         load()
     }
@@ -233,76 +232,41 @@ class Details: UIViewController, UITextViewDelegate {
                 }
                 print(httpResponse)
                 print(String.init(data: data, encoding: .utf8))
-                switch httpResponse.statusCode {
-                case 200:
-                    let decoder = JSONDecoder()
-                    if let json = try? decoder.decode(LessonDescription.self, from: data) {
-                        if !json.file.isEmpty {
-                            self.files = [File(link: json.file, name: json.file, size: nil)]
-                        }
-                        var attribute = self.createAttribute(color: self.lesson!.getColor())
-                        let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
-                        attribute = self.createAttribute(color: UIColor(hex: "5E5E5E"))
-                        string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))
-                        attribute = self.createAttribute(fontSize: 24, color: UIColor(hex: "303030"), bold: true)
-                        string.append(self.attributedString(string: "\(self.lesson!.title)\n", attribute))
-                        attribute = self.createAttribute(fontSize: 14, color: UIColor(hex: "424242"))
-                        
-                        var taskDescription = ""
-                        for line in json.comments {
-                            taskDescription += line + "\n"
-                        }
-                            //            "Формулировка задания - с. 247, в. 8 \n\nОбразцы:\nроман Ж.-Ж. Руссо \"Юлия или Новая Элоиза\" (https://www.e-reading.club/book.php?book=1023373)\nроман И.-В. Гете \"Страдания молодого Вертера\" (https://www.e-reading.club/bookreader.php/14656/Gete_-_Stradaniya_yunogo_Vertera.html)\n\nОба романа написаны как серия писем. После задания напишите короткое объяснение приемов, образов и тем, которые вы использовали. Критерии оценивания см. в присоединенном файле\n\nРаботы пришлите мне на почту: galina1267@inbox.ru"
-//                        "Выполнить ту работу, которую мы обсудили (завтра на уроке у каждого должен быть оформленный титульный лист с названием (если вы придумываете название), содержание, 1-2 написанных \"главы\"). Если вы пишете о родителях и других родственниках - подумайте, о чём именно уместно, важно и интересно рассказать. Порасспрашивайте их, возможно, узнаете много нового :) Ещё раз присылаю ссылку на автобиографию Маяковского, которую он назвал \"Я сам\" https://ru.wikisource.org/wiki/%D0%AF_%D1%81%D0%B0%D0%BC_(%D0%9C%D0%B0%D1%8F%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9) - посмотрите, как можно выстраивать текст, о чём писать и т.д. Работы пришлите мне на почту: galina1267@netschool.app!!"
-                        //            "Подготовьте презентацию о звуке, его свойствах и применении в жизни человека. Возможные темы:\n- Звуковые гранаты, звук как оружие\n- Как звук влияет на психику человека?\n- Ультразвуковое исследование в медицине\n- Генерация звука (любой музыкальный инструмент)\n- Инфразвук\n- Ухо человека - идеальный детектор звука"
-                        string.append(self.attributedString(string: "\n\(taskDescription)\n", attribute))
-                        attribute = self.createAttribute(color: .gray)
-                        let author = ""
-                        string.append(self.attributedString(string: "\(self.fullDate!),\n\(author)\n", attribute))
-                        self.attrStr = string
-                        self.status = .successful
-                        
-                        
-                        
-                        print(json)
-                        self.reloadTable()
-                    } else {
-                        self.status = .error
-                        self.reloadTable()
+                
+                guard httpResponse.statusCode == 200 else {
+                    self.errorHandle(httpResponse.statusCode)
+                    return
+                }
+                let decoder = JSONDecoder()
+                if let json = try? decoder.decode(LessonDescription.self, from: data) {
+                    if !json.file.isEmpty {
+                        self.files = [File(link: json.file, name: json.file, size: nil)]
                     }
-                case 400:
-                    print(400)
-                    if let errorDescription = String(data: data, encoding: String.Encoding.utf8)  {
-                        print(errorDescription)
+                    var attribute = self.createAttribute(color: self.lesson!.getColor())
+                    let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
+                    attribute = self.createAttribute(color: UIColor(hex: "5E5E5E"))
+                    string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))
+                    attribute = self.createAttribute(fontSize: 24, color: UIColor(hex: "303030"), bold: true)
+                    string.append(self.attributedString(string: "\(self.lesson!.title)\n", attribute))
+                    attribute = self.createAttribute(fontSize: 14, color: UIColor(hex: "424242"))
+                    
+                    var taskDescription = ""
+                    for line in json.comments {
+                        taskDescription += line + "\n"
                     }
-                    self.status = .error
+                    string.append(self.attributedString(string: "\n\(taskDescription)\n", attribute))
+                    attribute = self.createAttribute(color: .gray)
+                    let author = ""
+                    string.append(self.attributedString(string: "\(self.fullDate!),\n\(author)\n", attribute))
+                    self.attrStr = string
+                    self.status = .successful
+                    print(json)
                     self.reloadTable()
-                default:
+                } else {
                     self.status = .error
                     self.reloadTable()
                 }
             }.resume()
-            
-            
-            
-//            if lesson?.homework ?? false { createDoneBTN() }
-//            self.files = [File(link: "", name: "Критерии.pdf", size: nil)]
-//            var attribute = self.createAttribute(color: self.lesson!.getColor())
-//            let string = self.attributedString(string: "\n\(self.lesson!.workType)\n\n", attribute)
-//            attribute = self.createAttribute(color: UIColor(hex: "5E5E5E"))
-//            string.append(self.attributedString(string: "\(self.lesson!.subject)\n\n", attribute))
-//            attribute = self.createAttribute(fontSize: 24, color: UIColor(hex: "303030"), bold: true)
-//            string.append(self.attributedString(string: "\(self.lesson!.title)\n", attribute))
-//            attribute = self.createAttribute(fontSize: 14, color: UIColor(hex: "424242"))
-//            let taskDescription =
-//                //            "Формулировка задания - с. 247, в. 8 \n\nОбразцы:\nроман Ж.-Ж. Руссо \"Юлия или Новая Элоиза\" (https://www.e-reading.club/book.php?book=1023373)\nроман И.-В. Гете \"Страдания молодого Вертера\" (https://www.e-reading.club/bookreader.php/14656/Gete_-_Stradaniya_yunogo_Vertera.html)\n\nОба романа написаны как серия писем. После задания напишите короткое объяснение приемов, образов и тем, которые вы использовали. Критерии оценивания см. в присоединенном файле\n\nРаботы пришлите мне на почту: galina1267@inbox.ru"
-//            "Выполнить ту работу, которую мы обсудили (завтра на уроке у каждого должен быть оформленный титульный лист с названием (если вы придумываете название), содержание, 1-2 написанных \"главы\"). Если вы пишете о родителях и других родственниках - подумайте, о чём именно уместно, важно и интересно рассказать. Порасспрашивайте их, возможно, узнаете много нового :) Ещё раз присылаю ссылку на автобиографию Маяковского, которую он назвал \"Я сам\" https://ru.wikisource.org/wiki/%D0%AF_%D1%81%D0%B0%D0%BC_(%D0%9C%D0%B0%D1%8F%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B8%D0%B9) - посмотрите, как можно выстраивать текст, о чём писать и т.д. Работы пришлите мне на почту: galina1267@netschool.app!!"
-//            //            "Подготовьте презентацию о звуке, его свойствах и применении в жизни человека. Возможные темы:\n- Звуковые гранаты, звук как оружие\n- Как звук влияет на психику человека?\n- Ультразвуковое исследование в медицине\n- Генерация звука (любой музыкальный инструмент)\n- Инфразвук\n- Ухо человека - идеальный детектор звука"
-//            string.append(self.attributedString(string: "\n\(taskDescription)\n\n", attribute))
-//            attribute = self.createAttribute(color: .gray)
-//            string.append(self.attributedString(string: "\(self.fullDate!),\nМихайлюк Галина Эдуардовна\n", attribute))
-//            self.attrStr = string
-//            self.status = .successful
         case .mail:
             var attribute = self.createAttribute(fontSize: 24, bold: true)
             let string = self.attributedString(string: "Обновлённая версия Насреддина\n", attribute)
@@ -335,13 +299,6 @@ class Details: UIViewController, UITextViewDelegate {
             self.status = .successful
         default:
             ()
-        }
-    }
-    
-    private func reloadTable() {
-        DispatchQueue.main.async {
-//            self.refreshControl.stop
-            self.tableView.reloadData()
         }
     }
     
@@ -548,7 +505,7 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         switch status {
         case .loading: return view.loadingFooterView()
-        case .error: return view.errorFooterView()
+        case .error: return errorFooterView()
         default: return nil
         }
     }

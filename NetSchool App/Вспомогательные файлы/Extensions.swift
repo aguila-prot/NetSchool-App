@@ -28,6 +28,18 @@ extension UITableView {
     }
 }
 
+extension ViewControllerErrorHandler {
+    func errorFooterView() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 23))
+        footerView.backgroundColor = UIColor.clear
+        let footerLabel = UILabel(frame: CGRect(x: 0, y: 7, width: view.frame.size.width, height: 23))
+        footerLabel.addProperties
+        footerLabel.text = errorDescription
+        footerView.addSubview(footerLabel)
+        return footerView
+    }
+}
+
 extension UITableViewCell {
     var setSelection: Void {
         let myBackView = UIView(frame: self.frame)
