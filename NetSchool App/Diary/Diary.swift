@@ -23,7 +23,6 @@ struct Days: Codable {
 class DiaryContentViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    
     var haveLoadPermission = true
     var days = [JournalDay]()
     var weekToLoad: String?

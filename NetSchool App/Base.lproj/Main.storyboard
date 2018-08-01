@@ -21,7 +21,7 @@
         <!--Расписание-->
         <scene sceneID="7rP-X4-2GO">
             <objects>
-                <viewController id="Utj-1U-Soz" customClass="Schedule" customModule="NetSchool_App" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ScheduleVC" id="Utj-1U-Soz" customClass="Schedule" customModule="NetSchool_App" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Scy-aI-cKQ"/>
                         <viewControllerLayoutGuide type="bottom" id="ViW-gi-Kzp"/>
@@ -1395,7 +1395,7 @@
         <!--Tab Bar Controller-->
         <scene sceneID="Tfu-sf-apC">
             <objects>
-                <tabBarController id="uLI-2C-UaH" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="NavigationVC" id="uLI-2C-UaH" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="anm-Z6-awa">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1442,7 +1442,7 @@
         <!--Navigation Controller-->
         <scene sceneID="9Fm-JZ-F1X">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="b4a-ei-1fi" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="scheduleNavigation" automaticallyAdjustsScrollViewInsets="NO" id="b4a-ei-1fi" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="schedule_unselected" selectedImage="schedule" id="ZDk-XS-QO0">
                         <inset key="imageInsets" minX="0.0" minY="5" maxX="0.0" maxY="-5"/>
                     </tabBarItem>

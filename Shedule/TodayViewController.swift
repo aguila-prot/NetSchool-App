@@ -61,6 +61,15 @@ extension TodayViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
         return cell_height
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let url = URL(string: "netschool://shedule")!
+        self.extensionContext?.open(url, completionHandler: { (success) in
+            if (!success) {
+                print("error: failed to open app from Today Extension")
+            }
+        })
+    }
 }
 
 extension TodayViewController: NCWidgetProviding{
