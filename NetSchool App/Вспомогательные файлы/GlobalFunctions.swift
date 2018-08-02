@@ -26,7 +26,6 @@ class ViewControllerErrorHandler: UIViewController {
         super.viewDidLoad()
     }
     func errorHandle(_ statusCode: Int) {
-        self.status = .error
         switch statusCode {
         case 400:
             errorDescription = "Неверные данные в запросе"
@@ -53,15 +52,20 @@ class ViewControllerErrorHandler: UIViewController {
         default:
             errorDescription = "Неизвестная ошибка"
         }
-        if !goToLogin {
-            reloadTable()
-        }
     }
     
     func reloadTable() {
         DispatchQueue.main.async {
             self.refreshControl.stop
             self.table.reloadData()
+        }
+    }
+    
+    func showAlert() {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Ошибка:", message: self.errorDescription, preferredStyle: .alert)
+            alert.addOkAction
+            UIApplication.shared.keyWindow?.rootViewController?.present(alert)
         }
     }
     
@@ -102,7 +106,11 @@ class ViewControllerErrorHandler: UIViewController {
             print(httpResponse)
             print(String.init(data: data, encoding: .utf8))
             guard httpResponse.statusCode == 200 else {
+                self.status = .error
                 self.errorHandle(httpResponse.statusCode)
+                if !self.goToLogin {
+                    self.reloadTable()
+                }
                 return
             }
             let decoder = JSONDecoder()
@@ -113,6 +121,45 @@ class ViewControllerErrorHandler: UIViewController {
                 self.errorDescription = "Не удалось интерпретировать json"
                 self.reloadTable()
             }
+        }.resume()
+    }
+    
+    func postData(jsonData: Data?, method: String, methodType: String = "POST", completion: @escaping () -> Void ) {
+        let sessionName = UserDefaults.standard.value(forKey: "sessionName") as? String ?? ""
+        let cookie = UserDefaults.standard.value(forKey: sessionName) as? String ?? ""
+        guard !sessionName.isEmpty && !cookie.isEmpty else {
+            print("No Authorization")
+            goToLogin = true
+            let loginVC = Login()
+            loginVC.navigationBarHeight = self.navigationController?.navigationBar.frame.height ?? 0
+            loginVC.modalTransitionStyle = .coverVertical
+            present(loginVC)
+            return
+        }
+        var request = URLRequest(url: URL(string: "http://77.73.26.195:8000/\(method)")!)
+        request.httpMethod = methodType
+        print("*** request json ***")
+        print(String.init(data: jsonData!, encoding: .utf8))
+        request.setValue(sessionName, forHTTPHeaderField: "sessionName")
+        request.setValue(cookie, forHTTPHeaderField: sessionName)
+        request.httpBody = jsonData
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil,
+                let data = data,
+                let httpResponse = response as? HTTPURLResponse else {
+                    self.errorDescription = ReachabilityManager.shared.isNetworkAvailable ? error?.localizedDescription ?? "Нет ответа от сервера" : "Вероятно, соединение с интернетом прервано"
+                    self.table.reloadData()
+                    self.showAlert()
+                    return
+            }
+            print(httpResponse)
+            print(String.init(data: data, encoding: .utf8))
+            guard httpResponse.statusCode == 200 else {
+                self.errorHandle(httpResponse.statusCode)
+                self.showAlert()
+                completion()
+                return
+            }            
         }.resume()
     }
     

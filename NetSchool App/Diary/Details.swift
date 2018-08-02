@@ -11,7 +11,6 @@ struct LessonDescription: Codable {
     let comments: [String]
 }
 
-
 class Details: ViewControllerErrorHandler, UITextViewDelegate {
     
 //    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
@@ -62,7 +61,7 @@ class Details: ViewControllerErrorHandler, UITextViewDelegate {
         case .diary:
             if lesson?.isHomework ?? false {
                 let defaults = UserDefaults.standard
-                let not = lesson?.status == 2 ? "не" : ""
+                let not = lesson?.status == 3 ? "не" : ""
                 let action = UIPreviewAction(title: "Отметить как \(not)выполненное", style: .default) { _,_ in
                     self.setDone()
                     self.diaryVC?.tableView.reloadData()
@@ -225,6 +224,24 @@ class Details: ViewControllerErrorHandler, UITextViewDelegate {
                 self.attrStr = string
                 self.status = .successful
                 self.reloadTable()
+                DispatchQueue.main.async {
+                    if let diaryVC = self.diaryVC,
+                        let selectedCell = diaryVC.tableView.indexPathForSelectedRow,
+                        let cell = diaryVC.tableView.cellForRow(at: selectedCell) as? DiaryCell,
+                        let lesson = self.lesson {
+                        if lesson.status == 3 {
+                            cell.subjectLabelConstraint.constant = 26
+                            cell.firstStateIcon.image = UIImage(named: "done")
+                            cell.firstStateIcon.setImageBackgroundColor(lesson.getColor())
+                            cell.firstStateIcon.isHidden = false
+                            cell.backgroundColor = .white
+                        } else {
+                            cell.firstStateIcon.isHidden = true
+                            cell.subjectLabelConstraint.constant = 8
+                            cell.backgroundColor = .white
+                        }
+                    }
+                }
             }
         case .mail:
             if status != .loading {
@@ -279,24 +296,47 @@ class Details: ViewControllerErrorHandler, UITextViewDelegate {
         return NSMutableAttributedString(string: string, attributes: attribute )
     }
     
-//    private func createDoneBTN() {
-//        let done = UserDefaults.standard.bool(forKey: lesson!.key)
-//        navigationItem.rightBarButtonItem = createBarButtonItem(imageName: done ? "done_f" : "done_e", selector: #selector(makeDone))
-//    }
-    
     private func setDone() {
-//        let defaults = UserDefaults.standard
-//        let key = self.lesson!.key
-//        defaults.set(!defaults.bool(forKey: key), forKey: key)
-//        defaults.synchronize()
-    }
-    
-    @objc private func makeDone() {
-        setDone()
-        if let diaryVC = diaryVC {
-            diaryVC.tableView.reloadRows(at: [diaryVC.actionIndexPath], with: .none)
+        let jsonData = try? JSONSerialization.data(withJSONObject: ["id": lesson?.lessonID.AID ?? -5])
+        guard let status = lesson?.status else { return }
+        let newStatus = status == 3 ? 2 : 3
+        func reload() {
+            if let diaryVC = self.diaryVC,
+                let lesson = self.lesson {
+                func configureCell(_ index: IndexPath) {
+                    if let cell = diaryVC.tableView.cellForRow(at: index) as? DiaryCell {
+                        if lesson.status == 3 {
+                            cell.subjectLabelConstraint.constant = 26
+                            cell.firstStateIcon.image = UIImage(named: "done")
+                            cell.firstStateIcon.setImageBackgroundColor(lesson.getColor())
+                            cell.firstStateIcon.isHidden = false
+                            cell.backgroundColor = .white
+                        } else {
+                            cell.firstStateIcon.isHidden = true
+                            cell.subjectLabelConstraint.constant = 8
+                            cell.backgroundColor = .white
+                        }
+                    }
+                }
+                if let selectedCell = diaryVC.tableView.indexPathForSelectedRow {
+                    configureCell(selectedCell)
+                } else if let indexPath = indexPath {
+                    configureCell(indexPath)
+                }
+            }
+            if self.table.numberOfRows(inSection: 0) > 2 {
+                self.table.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .automatic)
+            }
         }
-//        createDoneBTN()
+        postData(jsonData: jsonData, method: status == 3 ? "unmark_as_done" : "mark_as_done") { () in
+            self.lesson?.status = status
+            DispatchQueue.main.async {
+                print("completion block")
+                reload()
+            }
+        }
+        lesson?.status = newStatus
+        reload()
     }
     
     fileprivate func updateSize(s: Int64) {
@@ -388,16 +428,13 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
             cell.TaskTextView.attributedText = attrStr
             cell.TaskTextView.delegate = self
             cell.separatorInset = UIEdgeInsets(top: 0, left: lesson?.isHomework ?? false ? 15 : cell.bounds.size.width, bottom: 0, right: 0)
-//            let myBackView = UIView(frame: cell.frame)
-//            myBackView.backgroundColor = .clear
-//            cell.selectedBackgroundView = myBackView
             cell.selectionStyle = .none
             return cell
         } else {
             if lesson?.isHomework ?? false {
                 if indexPath.row == 1 {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell3" , for: indexPath)
-                    cell.textLabel?.text = "Отметить как выполненное"
+                    cell.textLabel?.text = "Отметить как \(lesson?.status == 3 ? "не" : "")выполненное"
                     cell.textLabel?.textColor = darkSchemeColor()
                     cell.setSelection
                     cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
@@ -405,9 +442,6 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
                 } else if indexPath.row == 2 {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell3", for: indexPath)
                     cell.separatorInset = UIEdgeInsetsMake(0, cell.bounds.size.width, 0, 0)
-//                    let myBackView = UIView(frame: cell.frame)
-//                    myBackView.backgroundColor = .clear
-//                    cell.selectedBackgroundView = myBackView
                     cell.selectionStyle = .none
                     return cell
                 } else {
@@ -437,7 +471,7 @@ extension Details: UITableViewDelegate, UITableViewDataSource, SFSafariViewContr
         if lesson?.isHomework ?? false {
             if indexPath.row == 1 {
                 tableView.deselectSelectedRow
-                makeDone()
+                setDone()
             } else if indexPath.row != 2 {
                 openWebView(index: indexPath.row - 2)
             }

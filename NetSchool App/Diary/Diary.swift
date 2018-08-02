@@ -27,7 +27,6 @@ class DiaryContentViewController: ViewControllerErrorHandler {
     var days = [JournalDay]()
     var weekToLoad: String?
     private var PCLID = ""
-    var actionIndexPath = IndexPath(row: 0, section: 0)
     /// used to cancel URLSessionTask
     private var task: URLSessionTask?    
     
@@ -116,7 +115,7 @@ extension DiaryContentViewController: UITableViewDelegate, UITableViewDataSource
             cell.firstStateIcon.image = UIImage(named: "newDot")
             cell.firstStateIcon.setImageBackgroundColor(typeColor)
             cell.backgroundColor = UIColor(red: 239/255, green: 238/255, blue: 244/255, alpha: 1)
-        case 0:
+        case 3:
             // done
             cell.subjectLabelConstraint.constant = 26
             cell.firstStateIcon.image = UIImage(named: "done")
@@ -189,7 +188,7 @@ extension DiaryContentViewController: UIViewControllerPreviewingDelegate {
             guard let indexPath = tableView.indexPathForRow(at: location),
                 let cell = tableView.cellForRow(at: indexPath),
                 let detailVC = storyboard?.instantiateViewController(withIdentifier: "Details") as? Details else { return nil }
-            actionIndexPath = indexPath
+            detailVC.indexPath = indexPath
             detailVC.lesson = days[indexPath.section].getLesson(indexPath.row)
             detailVC.fullDate = days[indexPath.section].fullDate
             detailVC.detailType = .diary
@@ -260,7 +259,7 @@ class JournalDay {
 // MARK: - JournalLesson
 class JournalLesson {
     private let color :Color
-    let status: Int
+    var status: Int
     let lessonID: LessonID
     let inTime, isHomework: Bool
     let subject, mark, title, workType: String
